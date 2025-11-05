@@ -6,49 +6,49 @@
       "chain": "polkadot",
       "metadata": ".papi/metadata/dot.scale",
       "genesis": "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3",
-      "codeHash": "0xe260d17fcfa34f10503c91148a7bc2fd820e356295d2e18f828b5fa4190d47f7"
+      "codeHash": "0x625e4190035e51bfaa349c61bc198ed4103658fb4bd5f6716015a4a7f0412bdd"
     },
     "ahp": {
       "chain": "polkadot_asset_hub",
       "metadata": ".papi/metadata/ahp.scale",
       "genesis": "0x68d56f15f85d3136970ec16946040bc1752654e906147f7e43e9d539d7c3de2f",
-      "codeHash": "0x8cada8f706ffc7c9bd0c31985ec4f34520914778edefaa94b624bc6adea48a1c"
+      "codeHash": "0x274e1781dc36a23a922f9ec1e04afe0496a503612c4d57aa4fa0c8bf55b1237a"
     },
     "ahk": {
       "chain": "ksmcc3_asset_hub",
       "metadata": ".papi/metadata/ahk.scale",
       "genesis": "0x48239ef607d7928874027a43a67689209727dfb3d3dc5e5b03a39bdc2eda771a",
-      "codeHash": "0xc1db15b71ce88e1e74f4f4075837204788e40ace9fca23290002f8f52d639dd4"
+      "codeHash": "0x5a0e93172b7d4f2030a3a31c2f1aff1e170a323373a48f7f2bc44328872616fc"
     },
     "ksm": {
       "chain": "ksmcc3",
       "metadata": ".papi/metadata/ksm.scale",
       "genesis": "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
-      "codeHash": "0x1e0c7ef66f67073483ec5ad670c6b226fbd9a26e2e7d9b61afb65f2b82f95854"
+      "codeHash": "0x9bfa95446bff3c013666fd4c421cb0d8ce16b2e905a6589b58981876abf471d9"
     },
     "hyd": {
       "wsUrl": "wss://hydration-rpc.n.dwellir.com",
       "metadata": ".papi/metadata/hyd.scale",
       "genesis": "0xafdc188f45c71dacbaa0b62e16a91f726c7b8699a9748cdf715459de6b7f366d",
-      "codeHash": "0x5b3789c70537a0508cf6065fcd09ba930a24918afc8f00a49c7e6474eb643af6"
+      "codeHash": "0x252af19a9ac83c621c4f1307ded240c6054fe5c09b40e81c073ba74a3a06d898"
     },
     "ahpas": {
       "chain": "paseo_asset_hub",
       "metadata": ".papi/metadata/ahpas.scale",
       "genesis": "0xd6eec26135305a8ad257a20d003357284c8aa03d0bdb2b357ab0a22371e11ef2",
-      "codeHash": "0x1a6d2eb53e7f67138f84d537086d088cc240a810407e5564b0890eda8d501dc8"
+      "codeHash": "0x58a221d52c863cfe4ad70d5ad1933477bf737fe1e09b24669afbe4b1e2e5bc22"
     },
     "copas": {
       "wsUrl": "wss://sys.ibp.network/coretime-paseo",
       "metadata": ".papi/metadata/copas.scale",
       "genesis": "0xc806038cc1d06766f23074ade7c5511326be41646deabc259970ff280c82a464",
-      "codeHash": "0x7eb95683d3fdb4555b8c2d7e44df160e58cf9134e07937ef99c60e19d5458266"
+      "codeHash": "0x24215cf6c2aff16da8e918194932864b408ffe766464cc6e0cbffeeebab675df"
     },
     "hydpas": {
       "wsUrl": "wss://paseo-rpc.play.hydration.cloud",
       "metadata": ".papi/metadata/hydpas.scale",
       "genesis": "0x5f52a76d9a13fcc0c9094ba62c284f4f2f5e5f031f7e60eecaa7339f7f77c23f",
-      "codeHash": "0x252af19a9ac83c621c4f1307ded240c6054fe5c09b40e81c073ba74a3a06d898"
+      "codeHash": "0x18edbf9df45a44feda25c9b50d3153d8d2c381a0d80890e6df8d295abdf2b8bf"
     }
   },
   "options": {

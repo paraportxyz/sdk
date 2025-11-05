@@ -21,6 +21,7 @@
 	"files": ["dist", "README.md", "LICENSE"],
 	"scripts": {
 		"papi:generate": "papi --whitelist .papi/whitelist.ts",
+		"papi:update": "papi update --whitelist .papi/whitelist.ts",
 		"prepare": "pnpm run papi:generate",
 		"build": "pnpm run papi:generate && vite build",
 		"build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly --outDir dist",

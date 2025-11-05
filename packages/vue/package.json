@@ -1,7 +1,7 @@
 {
   "name": "@paraport/vue",
   "type": "module",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Vue components for ParaPort SDK",
   "author": "Paraport",
   "license": "MIT",

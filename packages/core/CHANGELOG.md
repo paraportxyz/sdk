@@ -1,5 +1,11 @@
 # @paraport/core
 
+## 0.1.9
+
+### Patch Changes
+
+- 0e5681f: update papi metadta
+
 ## 0.1.8
 
 ### Patch Changes

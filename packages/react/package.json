@@ -1,6 +1,6 @@
 {
   "name": "@paraport/react",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "React components for Paraport SDK",
   "keywords": [
     "react",

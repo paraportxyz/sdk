@@ -38,7 +38,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@polkadot/util-crypto": "^13.5.7",
+		"@polkadot/util": "13.5.7",
+		"@polkadot/util-crypto": "13.5.7",
 		"@vitest/coverage-v8": "3.1.2",
 		"jsdom": "^26.1.0",
 		"polkadot-api": "1.20.x",

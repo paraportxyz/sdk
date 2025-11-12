@@ -13,6 +13,13 @@ vi.mock('@paraspell/sdk', () => ({
   SUBSTRATE_CHAINS: ['Polkadot', 'AssetHubPolkadot', 'UnknownChain'],
 }))
 
+vi.mock('@paraspell/sdk-core', () => ({
+  validateDestination: vi.fn((origin: string, destination: string) => {
+    // Allow AssetHubPolkadot -> Polkadot route only
+    if (origin === 'AssetHubPolkadot' && destination === 'Polkadot') return
+    throw new Error('incompatible')
+  }),
+}))
 vi.mock('@/utils/assets', () => ({
   isAssetSupported: (_origin: string, destination: string, asset: string) => {
     // Only AssetHubPolkadot supports DOT in this mock
@@ -34,5 +41,13 @@ describe('chains utils', () => {
   it('getRouteChains returns origin plus supported destinations filtered to Chains', () => {
     const route = getRouteChains('Polkadot', 'DOT')
     expect(route).toEqual(['Polkadot', 'AssetHubPolkadot'])
+  })
+
+  it('getRouteChains calls validateDestination to decide allowed routes', async () => {
+    const core = await import('@paraspell/sdk-core') as any
+    const spy = core.validateDestination
+    getRouteChains('Polkadot', 'DOT')
+    expect(spy).toHaveBeenCalledWith('AssetHubPolkadot', 'Polkadot')
+    expect(spy).toHaveBeenCalledWith('UnknownChain', 'Polkadot')
   })
 })

@@ -7,6 +7,7 @@ import {
 	Chains,
 } from '@paraport/static'
 import { SUBSTRATE_CHAINS } from '@paraspell/sdk'
+import { validateDestination } from '@paraspell/sdk-core'
 import { isAssetSupported } from './assets'
 
 /**
@@ -46,10 +47,16 @@ export const decimalsOf = (chain: Chain): number => {
  * @returns Array of chains including the destination and eligible origins.
  */
 export const getRouteChains = (chain: Chain, asset: Asset): Chain[] => {
-	const otherChains = SUBSTRATE_CHAINS.filter((subChain) => {
-		if (chain === subChain) return false
+	const otherChains = SUBSTRATE_CHAINS.filter((origin) => {
+		if (chain === origin) return false
 
-		return isAssetSupported(chain, subChain as Chain, asset)
+		try {
+			validateDestination(origin as Chain, chain)
+		} catch (_error) {
+			return false
+		}
+
+		return isAssetSupported(chain, origin as Chain, asset)
 	})
 
 	const allowed = new Set(Object.values(Chains))

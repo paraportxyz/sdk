@@ -22,7 +22,6 @@ import {
 import { signAndSend } from '@/utils/tx'
 import type { Asset, Chain } from '@paraport/static'
 import { Builder } from '@paraspell/sdk'
-import { maxBy } from 'lodash'
 
 type XCMTransferParams = {
 	amount: bigint
@@ -119,6 +118,54 @@ export default class XCMBridge extends Initializable implements BridgeAdapter {
 	}
 
 	/**
+	 * Selects the best origin chain from candidate balances by highest transferable
+	 * that can actually support the route (validated via a sample getXcmFee call).
+	 *
+	 * - Sorts candidates by `transferable` desc
+	 * - For each candidate, attempts a lightweight fee query to validate the route
+	 * - Returns the first candidate that succeeds, otherwise null
+	 */
+	private async findOrigin({
+		candidates,
+		destinationChain,
+		address,
+		asset,
+		amount,
+	}: {
+		candidates: Balance[]
+		destinationChain: Chain
+		address: string
+		asset: Asset
+		amount: bigint
+	}): Promise<Balance | null> {
+		const sorted = [...candidates].sort((a, b) =>
+			b.transferable === a.transferable
+				? 0
+				: b.transferable > a.transferable
+					? 1
+					: -1,
+		)
+
+		for (const cand of sorted) {
+			try {
+				await this.getParaspellQuery({
+					amount,
+					originChain: cand.chain,
+					destinationChain,
+					address,
+					asset,
+				}).getXcmFee()
+
+				return cand
+			} catch {
+				// Try next candidate
+			}
+		}
+
+		return null
+	}
+
+	/**
 	 * Computes transfer amount based on teleport mode and fees.
 	 * @param amount - User requested amount
 	 * @param xcmFee - Estimated XCM fee
@@ -180,10 +227,13 @@ export default class XCMBridge extends Initializable implements BridgeAdapter {
 			(balance) => balance.chain !== destinationChain,
 		)
 
-		const highestBalanceChain = maxBy(
-			targetChainBalances,
-			(balance) => balance.transferable,
-		)
+		const highestBalanceChain = await this.findOrigin({
+			candidates: targetChainBalances,
+			destinationChain,
+			address,
+			asset,
+			amount,
+		})
 
 		if (!highestBalanceChain || !currentChainBalance) {
 			return null

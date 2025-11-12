@@ -26,7 +26,6 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       external: (id) => [
         '@paraport/static',
-        'lodash',
         'eventemitter3',
         'p-retry',
         'dedot',

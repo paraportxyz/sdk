@@ -218,6 +218,84 @@ describe('XCMBridge', () => {
     expect(quote).toBeNull()
   })
 
+  it('falls back to next best origin when top candidate fee probe fails', async () => {
+    const balanceService = {
+      getBalances: vi.fn().mockResolvedValue([
+        { chain: Chains.Kusama, transferable: 2_000_000n }, // top candidate
+        { chain: Chains.Polkadot, transferable: 1_500_000n }, // second best
+        { chain: Chains.AssetHubKusama, transferable: 100n }, // destination
+      ]),
+    } as unknown as BalanceService
+
+    const bridge = new XCMBridge({
+      ...config,
+      chains: [Chains.Kusama, Chains.Polkadot, Chains.AssetHubKusama],
+    }, balanceService, makePapi())
+
+    const utils = await import('@/utils') as any
+    // Provide two candidates + destination
+    utils.getRouteChains.mockReturnValueOnce([
+      Chains.Kusama,
+      Chains.Polkadot,
+      Chains.AssetHubKusama,
+    ])
+
+    const paraspell = await import('@paraspell/sdk')
+    const builderChain = (paraspell as any).Builder()
+    // First probe (for top candidate) fails, second succeeds
+    builderChain.getXcmFee.mockRejectedValueOnce(new Error('probe failed'))
+
+    const quote = await bridge.getQuote({
+      address: SUBSTRATE_ADDRESS,
+      asset: Assets.KSM,
+      chain: Chains.AssetHubKusama,
+      amount: 1_000_000n,
+      teleportMode: TeleportModes.Expected,
+    })
+
+    expect(quote).toBeTruthy()
+    expect(quote?.route.origin).toBe(Chains.Polkadot)
+    expect(quote?.fees.total).toBe(15n)
+  })
+
+  it('returns null when no candidate origin passes fee probe', async () => {
+    const balanceService = {
+      getBalances: vi.fn().mockResolvedValue([
+        { chain: Chains.Kusama, transferable: 2_000_000n },
+        { chain: Chains.Polkadot, transferable: 1_500_000n },
+        { chain: Chains.AssetHubKusama, transferable: 100n },
+      ]),
+    } as unknown as BalanceService
+
+    const bridge = new XCMBridge({
+      ...config,
+      chains: [Chains.Kusama, Chains.Polkadot, Chains.AssetHubKusama],
+    }, balanceService, makePapi())
+
+    const utils = await import('@/utils') as any
+    utils.getRouteChains.mockReturnValueOnce([
+      Chains.Kusama,
+      Chains.Polkadot,
+      Chains.AssetHubKusama,
+    ])
+
+    const paraspell = await import('@paraspell/sdk')
+    const builderChain = (paraspell as any).Builder()
+    // All probes fail for two candidates
+    builderChain.getXcmFee.mockRejectedValueOnce(new Error('probe failed'))
+    builderChain.getXcmFee.mockRejectedValueOnce(new Error('probe failed'))
+
+    const quote = await bridge.getQuote({
+      address: SUBSTRATE_ADDRESS,
+      asset: Assets.KSM,
+      chain: Chains.AssetHubKusama,
+      amount: 1_000_000n,
+      teleportMode: TeleportModes.Expected,
+    })
+
+    expect(quote).toBeNull()
+  })
+
   it('Exact mode does not enforce expected-destination check', async () => {
     const balanceService = {
       getBalances: vi.fn().mockResolvedValue([

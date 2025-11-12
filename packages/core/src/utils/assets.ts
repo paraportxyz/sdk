@@ -20,10 +20,30 @@ import {
  * catalog entries. For example, on AssetHubKusama, DOT is represented as
  * `DOT2` in Paraspell's catalog.
  */
-const aliasMap: Partial<Record<Chain, Partial<Record<Asset, string>>>> = {
-	AssetHubKusama: {
-		DOT: 'DOT2',
-	},
+type AliasMap = Partial<Record<Chain, Partial<Record<Asset, string>>>>
+const aliasMap: AliasMap = {}
+
+export const __resetAliasesForTests = () => {
+	for (const k of Object.keys(aliasMap) as (keyof typeof aliasMap)[]) {
+		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+		delete aliasMap[k]
+	}
+}
+
+export const __setAliasForTests = (
+	chain: Chain,
+	symbol: Asset,
+	alias?: string,
+) => {
+	if (!aliasMap[chain]) {
+		aliasMap[chain] = {}
+	}
+	const entry = aliasMap[chain] as NonNullable<AliasMap[Chain]>
+	if (alias === undefined) {
+		delete entry[symbol]
+	} else {
+		entry[symbol] = alias
+	}
 }
 
 /**

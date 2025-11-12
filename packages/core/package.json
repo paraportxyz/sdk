@@ -39,7 +39,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@polkadot/util-crypto": "^13.5.7",
-		"@types/lodash": "^4.17.15",
 		"@vitest/coverage-v8": "3.1.2",
 		"jsdom": "^26.1.0",
 		"polkadot-api": "1.20.x",
@@ -54,10 +53,10 @@
 	},
 	"dependencies": {
 		"@paraport/static": "workspace:*",
-		"@paraspell/sdk": "^11.12.7",
+		"@paraspell/sdk": "^11.13.0",
+		"@paraspell/sdk-core": "^11.13.0",
 		"dedot": "^0.16.0",
 		"eventemitter3": "^5.0.1",
-		"lodash": "^4.17.21",
 		"p-retry": "^6.2.1"
 	}
 }

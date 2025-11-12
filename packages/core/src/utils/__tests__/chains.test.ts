@@ -21,9 +21,9 @@ vi.mock('@paraspell/sdk-core', () => ({
   }),
 }))
 vi.mock('@/utils/assets', () => ({
-  isAssetSupported: (_origin: string, destination: string, asset: string) => {
-    // Only AssetHubPolkadot supports DOT in this mock
-    return asset === 'DOT' && destination === 'AssetHubPolkadot'
+  isAssetSupported: (origin: string, _destination: string, asset: string) => {
+    // Only AssetHubPolkadot supports DOT in this mock (origin-specific)
+    return asset === 'DOT' && origin === 'AssetHubPolkadot'
   },
 }))
 

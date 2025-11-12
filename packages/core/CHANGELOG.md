@@ -1,5 +1,11 @@
 # @paraport/core
 
+## 0.1.11
+
+### Patch Changes
+
+- 8f2b705: fix: isAssetSupported param order for getRouteChains
+
 ## 0.1.10
 
 ### Patch Changes

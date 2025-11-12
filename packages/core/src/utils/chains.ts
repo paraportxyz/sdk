@@ -42,26 +42,26 @@ export const decimalsOf = (chain: Chain): number => {
  *
  * Returns the destination `chain` and all origin chains that support the asset.
  *
- * @param chain Destination chain.
+ * @param destionation Destination chain.
  * @param asset Asset symbol.
  * @returns Array of chains including the destination and eligible origins.
  */
-export const getRouteChains = (chain: Chain, asset: Asset): Chain[] => {
+export const getRouteChains = (destionation: Chain, asset: Asset): Chain[] => {
 	const otherChains = SUBSTRATE_CHAINS.filter((origin) => {
-		if (chain === origin) return false
+		if (destionation === origin) return false
 
 		try {
-			validateDestination(origin as Chain, chain)
+			validateDestination(origin as Chain, destionation)
 		} catch (_error) {
 			return false
 		}
 
-		return isAssetSupported(chain, origin as Chain, asset)
+		return isAssetSupported(origin as Chain, destionation, asset)
 	})
 
 	const allowed = new Set(Object.values(Chains))
 
-	return [chain, ...otherChains].filter((c) =>
+	return [destionation, ...otherChains].filter((c) =>
 		allowed.has(c as Chain),
 	) as Chain[]
 }

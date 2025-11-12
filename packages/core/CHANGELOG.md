@@ -1,5 +1,13 @@
 # @paraport/core
 
+## 0.1.10
+
+### Patch Changes
+
+- 90e6ed5: - improve route validation and route origin selection logic
+  - updated to paraspell sdk and sdk-core to latests
+  - remove ahk dot alias
+
 ## 0.1.9
 
 ### Patch Changes

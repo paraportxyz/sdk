@@ -1,5 +1,12 @@
 # @paraport/vue
 
+## 0.1.11
+
+### Patch Changes
+
+- Updated dependencies [90e6ed5]
+  - @paraport/core@0.1.10
+
 ## 0.1.10
 
 ### Patch Changes

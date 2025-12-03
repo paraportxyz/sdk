@@ -5,19 +5,10 @@ import {
 	type Chain,
 	type ChainProperties,
 	Chains,
-	existentialDeposit,
 } from '@paraport/static'
 import { SUBSTRATE_CHAINS } from '@paraspell/sdk'
+import { validateDestination } from '@paraspell/sdk-core'
 import { isAssetSupported } from './assets'
-
-/**
- * Gets the existential deposit for a chain.
- * @param chain - Chain identifier
- * @returns Existential deposit as bigint
- */
-export const edOf = (chain: Chain): bigint => {
-	return BigInt(existentialDeposit[chain])
-}
 
 /**
  * Returns static chain properties (ss58, decimals, explorer, etc.).
@@ -46,24 +37,31 @@ export const decimalsOf = (chain: Chain): number => {
 	return chainPropListOf(chain).tokenDecimals
 }
 
-//
-
 /**
- * Lists chains where telport will interact and where a given asset is available.
- * @param chain - Chain identifier
- * @param asset - Asset symbol
- * @returns Array of chains
+ * Lists chains where teleport will interact and where a given asset is available.
+ *
+ * Returns the destination `chain` and all origin chains that support the asset.
+ *
+ * @param destionation Destination chain.
+ * @param asset Asset symbol.
+ * @returns Array of chains including the destination and eligible origins.
  */
-export const getRouteChains = (chain: Chain, asset: Asset): Chain[] => {
-	const otherChains = SUBSTRATE_CHAINS.filter((subChain) => {
-		if (chain === subChain) return false
+export const getRouteChains = (destionation: Chain, asset: Asset): Chain[] => {
+	const otherChains = SUBSTRATE_CHAINS.filter((origin) => {
+		if (destionation === origin) return false
 
-		return isAssetSupported(chain, subChain as Chain, asset)
+		try {
+			validateDestination(origin as Chain, destionation)
+		} catch (_error) {
+			return false
+		}
+
+		return isAssetSupported(origin as Chain, destionation, asset)
 	})
 
 	const allowed = new Set(Object.values(Chains))
 
-	return [chain, ...otherChains].filter((c) =>
+	return [destionation, ...otherChains].filter((c) =>
 		allowed.has(c as Chain),
 	) as Chain[]
 }

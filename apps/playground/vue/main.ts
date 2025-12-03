@@ -1,4 +1,4 @@
-import { USER_ADDRESS, AMOUNT, ENDPOINTS, CHAIN, ASSET, getSigner } from '../utils'
+import { USER_ADDRESS, AMOUNT, ENDPOINTS, CHAIN, ASSET, CHAINS, getSigner } from '../utils'
 import { createApp, h } from 'vue'
 import { ParaportPlugin, Paraport } from '@paraport/vue'
 import '@paraport/vue/style'
@@ -19,7 +19,8 @@ const app = createApp({
         onSubmit: this.onSubmit,
         getSigner,
         logLevel: 'DEBUG',
-        endpoints: ENDPOINTS
+        endpoints: ENDPOINTS,
+        chains: CHAINS
       }
     )
   },

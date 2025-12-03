@@ -56,9 +56,9 @@ describe.sequential('E2E: ParaPortSDK initSession → executeSession', () => {
 		vi.spyOn(BalanceService.prototype, 'subscribeBalances').mockResolvedValue(
 			() => {},
 		)
-		vi.spyOn(BalanceService.prototype, 'waitForFunds').mockResolvedValue({
-			transferable: 1n,
-		} as any)
+    vi.spyOn(BalanceService.prototype, 'waitForFundsIncrease').mockResolvedValue({
+        transferable: 1n,
+    } as any)
 
 		const sdk = new ParaPortSDK({
 			chains: [Chains.Kusama, Chains.AssetHubKusama],

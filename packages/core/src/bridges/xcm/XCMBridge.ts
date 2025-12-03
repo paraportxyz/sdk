@@ -15,11 +15,13 @@ import {
 } from '@/types/teleport'
 import type { TransactionCallback } from '@/types/transactions'
 import { formatAddress, getRouteChains } from '@/utils'
-import { getParaspellCurrencyInput } from '@/utils/assets'
+import {
+	getParaspellCurrencyInput,
+	isFeeAssetSupportedForRoute,
+} from '@/utils/assets'
 import { signAndSend } from '@/utils/tx'
 import type { Asset, Chain } from '@paraport/static'
 import { Builder } from '@paraspell/sdk'
-import { maxBy } from 'lodash'
 
 type XCMTransferParams = {
 	amount: bigint
@@ -56,20 +58,33 @@ export default class XCMBridge extends Initializable implements BridgeAdapter {
 		address,
 		asset,
 	}: XCMTransferParams) {
-		const { client } = this.papi.getInstance(originChain)
-
 		const currencyInput = getParaspellCurrencyInput(originChain, asset)
 
-		return (
-			Builder(client)
-				.from(originChain)
-				.to(destinationChain)
-				.currency({ ...currencyInput, amount })
-				.address(formatAddress(address, destinationChain))
-				.senderAddress(formatAddress(address, originChain))
-				// Pay transaction fee with the same asset
-				.feeAsset(currencyInput)
-		)
+		let builder = Builder({
+			// Provide chain-specific clients to avoid paraspell from instantiating its own papi instances
+			apiOverrides: {
+				[originChain]: this.papi.getInstance(originChain).client,
+				[destinationChain]: this.papi.getInstance(destinationChain).client,
+			},
+		})
+			.from(originChain)
+			.to(destinationChain)
+			.currency({ ...currencyInput, amount })
+			.address(formatAddress(address, destinationChain))
+			.senderAddress(formatAddress(address, originChain))
+
+		if (
+			isFeeAssetSupportedForRoute({
+				origin: originChain,
+				destination: destinationChain,
+				symbol: asset,
+			})
+		) {
+			// Pay transaction fee with the same asset
+			builder = builder.feeAsset(currencyInput)
+		}
+
+		return builder
 	}
 
 	/**
@@ -100,6 +115,54 @@ export default class XCMBridge extends Initializable implements BridgeAdapter {
 			console.log('Failed getting Xcm fee', error)
 			throw error
 		}
+	}
+
+	/**
+	 * Selects the best origin chain from candidate balances by highest transferable
+	 * that can actually support the route (validated via a sample getXcmFee call).
+	 *
+	 * - Sorts candidates by `transferable` desc
+	 * - For each candidate, attempts a lightweight fee query to validate the route
+	 * - Returns the first candidate that succeeds, otherwise null
+	 */
+	private async findOrigin({
+		candidates,
+		destinationChain,
+		address,
+		asset,
+		amount,
+	}: {
+		candidates: Balance[]
+		destinationChain: Chain
+		address: string
+		asset: Asset
+		amount: bigint
+	}): Promise<Balance | null> {
+		const sorted = [...candidates].sort((a, b) =>
+			b.transferable === a.transferable
+				? 0
+				: b.transferable > a.transferable
+					? 1
+					: -1,
+		)
+
+		for (const cand of sorted) {
+			try {
+				await this.getParaspellQuery({
+					amount,
+					originChain: cand.chain,
+					destinationChain,
+					address,
+					asset,
+				}).getXcmFee()
+
+				return cand
+			} catch {
+				// Try next candidate
+			}
+		}
+
+		return null
 	}
 
 	/**
@@ -164,10 +227,13 @@ export default class XCMBridge extends Initializable implements BridgeAdapter {
 			(balance) => balance.chain !== destinationChain,
 		)
 
-		const highestBalanceChain = maxBy(
-			targetChainBalances,
-			(balance) => balance.transferable,
-		)
+		const highestBalanceChain = await this.findOrigin({
+			candidates: targetChainBalances,
+			destinationChain,
+			address,
+			asset,
+			amount,
+		})
 
 		if (!highestBalanceChain || !currentChainBalance) {
 			return null

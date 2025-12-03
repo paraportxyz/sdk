@@ -110,7 +110,10 @@ export class BaseManager<
 			timestamp: Date.now(),
 			data: {
 				status: status,
-				error: params?.error,
+				// Access error from params if provided, without constraining OnUpdateParams
+				error: (
+					params as Partial<BaseDetails<StatusType, EventType>> | undefined
+				)?.error,
 			},
 		}
 

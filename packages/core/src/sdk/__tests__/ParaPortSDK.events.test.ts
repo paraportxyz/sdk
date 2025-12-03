@@ -43,7 +43,7 @@ describe('ParaPortSDK event wiring', () => {
     // Avoid network in BalanceService by stubbing all calls used in this flow
     vi.spyOn(BalanceService.prototype, 'hasEnoughBalance').mockResolvedValue(false)
     vi.spyOn(BalanceService.prototype, 'subscribeBalances').mockResolvedValue(() => {})
-    vi.spyOn(BalanceService.prototype, 'waitForFunds').mockResolvedValue({ transferable: 1n } as any)
+    vi.spyOn(BalanceService.prototype, 'waitForFundsIncrease').mockResolvedValue({ transferable: 1n } as any)
 
     const sdk = new ParaPortSDK({
       chains: [Chains.Kusama, Chains.AssetHubKusama],

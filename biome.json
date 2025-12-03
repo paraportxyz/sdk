@@ -12,6 +12,7 @@
       "**/__tests__/**",
       "**/__snapshots__/**",
       "**/e2e/**",
+      "**/src/descriptors/**",
       "**/.papi/**",
       "**/vitest.config.*.ts",
       "**/vitest.config.ts",

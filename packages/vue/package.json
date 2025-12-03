@@ -1,7 +1,7 @@
 {
   "name": "@paraport/vue",
   "type": "module",
-  "version": "0.1.0-alpha.35",
+  "version": "0.1.12",
   "description": "Vue components for ParaPort SDK",
   "author": "Paraport",
   "license": "MIT",
@@ -32,12 +32,15 @@
   "scripts": {
     "dev": "vite build --watch --mode development",
     "build": "vue-tsc && vite build",
+    "build:types": "vue-tsc -p tsconfig.types.json",
+    "typecheck": "vue-tsc -p tsconfig.json --noEmit",
     "preview": "vite preview",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run"
   },
   "peerDependencies": {
-    "polkadot-api": "1.19.x"
+    "polkadot-api": "1.20.x"
   },
   "dependencies": {
     "@paraport/core": "workspace:*",
@@ -59,16 +62,18 @@
     "@biomejs/biome": "^1.9.4",
     "@types/sass": "^1.45.0",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vitest/coverage-v8": "^3.1.2",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.32.0",
-    "polkadot-api": "1.19.x",
+    "jsdom": "^26.1.0",
+    "polkadot-api": "1.20.x",
     "postcss": "^8.5.2",
     "sass": "^1.84.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
     "vite": "^6.0.7",
     "vite-plugin-dts": "^4.5.0",
+    "vitest": "^3.1.2",
     "vue-tsc": "^2.2.0"
   }
-
 }

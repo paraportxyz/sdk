@@ -103,4 +103,20 @@ describe('BalanceService', () => {
     expect(result.transferable).toBe(120n)
     expect(getBalancesSpy).toHaveBeenCalledTimes(3)
   })
+
+  it('waitForFundsIncrease retries until delta threshold and returns balance', async () => {
+    const api = makeApi({ [Chains.AssetHubKusama]: 100n })
+    const svc = new BalanceService(api, makeLoggerMock())
+
+    const getBalanceSpy = vi.spyOn(svc as any, 'getBalance')
+      .mockResolvedValueOnce({ chain: Chains.AssetHubKusama, transferable: 50n } as any)
+      .mockResolvedValueOnce({ chain: Chains.AssetHubKusama, transferable: 75n } as any)
+      .mockResolvedValueOnce({ chain: Chains.AssetHubKusama, transferable: 81n } as any)
+
+    const result = await svc.waitForFundsIncrease({ address: SUBSTRATE_ADDRESS, asset: Assets.KSM, chain: Chains.AssetHubKusama, delta: 30n })
+
+    // Baseline 50n + delta 30n => target 80n
+    expect(result.transferable).toBe(81n)
+    expect(getBalanceSpy).toHaveBeenCalledTimes(3)
+  })
 })

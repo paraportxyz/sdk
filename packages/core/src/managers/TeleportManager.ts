@@ -99,6 +99,7 @@ export class TeleportManager extends BaseManager<
 			details: {
 				address: params.address,
 				amount: quote.total,
+				receiveAmount: quote.amount,
 				asset: quote.asset,
 				route: quote.route,
 			},
@@ -202,6 +203,7 @@ export class TeleportManager extends BaseManager<
 			this.subscribe(TeleportEventTypes.TELEPORT_UPDATED, async (teleport) => {
 				this.logger.debug(
 					`[${TeleportEventTypes.TELEPORT_UPDATED}] ${teleport.status}`,
+					teleport,
 				)
 
 				if (teleport.status === TeleportStatuses.Failed) return
@@ -225,8 +227,13 @@ export class TeleportManager extends BaseManager<
 				TransactionEventTypes.TRANSACTION_UPDATED,
 				async (transaction) => {
 					this.logger.debug(
-						`[${TransactionEventTypes.TRANSACTION_UPDATED}] ${transaction.id} -> ${transaction.status}`,
+						`[${TransactionEventTypes.TRANSACTION_UPDATED}] ${transaction.status}`,
+						transaction,
 					)
+
+					if (transaction.status === TransactionStatuses.Block) {
+						this.logger.debug(`txHash ${transaction.txHash}`)
+					}
 
 					this.handleTransactionUpdate(transaction)
 				},
@@ -240,7 +247,8 @@ export class TeleportManager extends BaseManager<
 
 	private processNextStep(teleport: TeleportDetails): void {
 		this.logger.debug(
-			`Processing next step for teleport ${teleport.id} in status ${teleport.status}`,
+			`Processing next step for teleport in status ${teleport.status}`,
+			teleport,
 		)
 
 		this.statusActionMap[teleport.status]?.(teleport)
@@ -302,11 +310,13 @@ export class TeleportManager extends BaseManager<
 	}
 
 	private async checkForFunds(teleport: TeleportDetails) {
-		await this.balanceService.waitForFunds({
+		const destination = teleport.details.route.destination
+
+		await this.balanceService.waitForFundsIncrease({
 			address: teleport.details.address,
-			chains: [teleport.details.route.destination],
+			chain: destination,
 			asset: teleport.details.asset,
-			amount: teleport.details.amount,
+			delta: teleport.details.receiveAmount,
 		})
 
 		this.updateStatus(teleport.id, TeleportStatuses.Completed, {

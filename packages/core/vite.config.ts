@@ -24,14 +24,13 @@ export default defineConfig(({ mode }) => ({
         }
       : undefined,
     rollupOptions: {
-      external: [
-        'polkadot-api',
+      external: (id) => [
         '@paraport/static',
-        'lodash',
         'eventemitter3',
         'p-retry',
         'dedot',
-      ],
+        'polkadot-api',
+      ].includes(id) || id.startsWith('polkadot-api/'),
     },
   },
   resolve: {

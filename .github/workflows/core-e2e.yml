@@ -1,0 +1,64 @@
+name: Core Live E2E
+
+on:
+  # Run when PRs are merged into main
+  push:
+    branches:
+      - main
+  # Manual trigger with optional chain input
+  workflow_dispatch:
+    inputs:
+      chain:
+        description: "Chain to run live E2E against (CoretimePaseo or HydrationPaseo)"
+        required: false
+        default: "CoretimePaseo"
+  # Nightly run (02:00 UTC)
+  schedule:
+    - cron: '0 2 * * *'
+
+concurrency:
+  group: core-live-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-live:
+    name: Live E2E (@paraport/core) - ${{ matrix.chain }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        # If a manual input chain is provided, run only that one; otherwise run both
+        chain: ${{ github.event.inputs.chain && fromJSON(format('["{0}"]', github.event.inputs.chain)) || fromJSON('["CoretimePaseo","HydrationPaseo"]') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build @paraport/static (core e2e dependency)
+        run: pnpm --filter @paraport/static build
+
+      - name: Run LIVE E2E tests (@paraport/core)
+        run: pnpm --filter @paraport/core run test:e2e:live
+        env:
+          CI: true
+          E2E_LIVE: '1'
+          # Run once per matrix entry; manual dispatch can filter via input
+          E2E_CHAIN: ${{ matrix.chain }}
+          E2E_ADDRESS: ${{ secrets.E2E_ADDRESS }}
+          E2E_MNEMONIC: ${{ secrets.E2E_MNEMONIC }}

@@ -27,8 +27,11 @@ vi.mock('polkadot-api/polkadot-sdk-compat', () => ({
 vi.mock('@/descriptors', () => ({
   ahk: {} as any,
   ahp: {} as any,
+  ahpas: {} as any,
+  copas: {} as any,
   dot: {} as any,
   hyd: {} as any,
+  hydpas: {} as any,
   ksm: {} as any,
 }))
 
@@ -97,4 +100,3 @@ describe('PolkadotApi', () => {
     expect(createClientMock).toHaveBeenCalledTimes(3)
   })
 })
-

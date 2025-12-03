@@ -4,6 +4,9 @@ export const Chains = {
 	Kusama: 'Kusama',
 	AssetHubPolkadot: 'AssetHubPolkadot',
 	Hydration: 'Hydration',
+	AssetHubPaseo: 'AssetHubPaseo',
+	CoretimePaseo: 'CoretimePaseo',
+	HydrationPaseo: 'HydrationPaseo',
 } as const
 
 // TODO: move to util
@@ -15,11 +18,10 @@ export const Assets = {
 	DOT: 'DOT',
 	KSM: 'KSM',
 	HDX: 'HDX',
+	PAS: 'PAS',
 } as const
 
 export type Asset = ObjectValues<typeof Assets>
-
-export type Prefix = 'dot' | 'ksm' | 'ahk' | 'ahp'
 
 export type Config<T = boolean> = Record<Chain, T>
 

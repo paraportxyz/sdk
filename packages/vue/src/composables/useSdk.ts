@@ -1,7 +1,8 @@
 import type { ParaPortSDK, TeleportParams } from '@paraport/core'
 import type { Ref } from 'vue'
-import type { type DisplayMode, DisplayModes, ParaportParams } from '@/types'
+import type { DisplayMode, ParaportParams } from '@/types'
 import { ref } from 'vue'
+import { DisplayModes } from '@/types'
 
 const sdk = ref() as Ref<ParaPortSDK>
 const params = ref() as Ref<TeleportParams<string>>

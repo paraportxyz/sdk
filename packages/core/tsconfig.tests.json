@@ -1,0 +1,13 @@
+{
+	"extends": "./tsconfig.json",
+	"include": [
+		"src",
+		"e2e",
+		"**/__tests__/**",
+		"**/*.test.ts",
+		"**/*.spec.ts",
+		"vitest.config.ts",
+		"vitest.config.e2e.ts"
+	],
+	"exclude": ["node_modules", "dist"]
+}

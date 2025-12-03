@@ -1,8 +1,13 @@
 {
   "name": "@paraport/react",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.12",
   "description": "React components for Paraport SDK",
-  "keywords": ["react", "paraport", "sdk", "polkadot"],
+  "keywords": [
+    "react",
+    "paraport",
+    "sdk",
+    "polkadot"
+  ],
   "license": "MIT",
   "type": "module",
   "files": [
@@ -27,15 +32,19 @@
     "dev": "vite build --watch --mode development",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "peerDependencies": {
-    "polkadot-api": "1.19.x",
+    "polkadot-api": "1.20.x",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "polkadot-api": "1.19.x",
+    "polkadot-api": "1.20.x",
+    "@vitest/coverage-v8": "^3.1.2",
+    "jsdom": "^26.1.0",
     "@eslint/js": "^9.22.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
@@ -50,7 +59,8 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^6.3.1",
-    "vite-plugin-dts": "^4.5.0"
+    "vite-plugin-dts": "^4.5.0",
+    "vitest": "^3.1.2"
   },
   "dependencies": {
     "@paraport/sdk": "workspace:*"

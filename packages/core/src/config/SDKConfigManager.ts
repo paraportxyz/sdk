@@ -26,15 +26,9 @@ export class SDKConfigManager {
 	public static getDefaultConfig(config: SDKConfig<false>): SDKConfig {
 		return {
 			...config,
-			bridgeProtocols: ['XCM'],
+			bridgeProtocols: config.bridgeProtocols ?? ['XCM'],
 			logLevel: config.logLevel ?? LogLevels.INFO,
-			chains: [
-				Chains.Polkadot,
-				Chains.AssetHubPolkadot,
-				Chains.Kusama,
-				Chains.AssetHubKusama,
-				Chains.Hydration,
-			],
+			chains: config.chains ?? Object.values(Chains),
 		}
 	}
 }

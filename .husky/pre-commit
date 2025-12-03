@@ -1,0 +1,2 @@
+# Run staged linters for changed files
+pnpm lint-staged

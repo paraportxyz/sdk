@@ -26,9 +26,8 @@ describe('utils/balance.transferableBalanceOf', () => {
     expect(transferableBalanceOf(200n, 'Hydration' as Chain, 'HDX' as any)).toBe(200n)
   })
 
-  it('can return negative when ED > amount (no clamping)', () => {
+  it('clamps to zero when ED > amount', () => {
     // ED(Kusama.KSM) = 100n (mocked) > 50n
-    expect(transferableBalanceOf(50n, 'Kusama' as Chain, 'KSM' as any)).toBe(-50n)
+    expect(transferableBalanceOf(50n, 'Kusama' as Chain, 'KSM' as any)).toBe(0n)
   })
 })
-

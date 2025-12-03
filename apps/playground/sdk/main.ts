@@ -1,14 +1,15 @@
 import '@paraport/sdk/style'
 import * as paraport from '@paraport/sdk'
-import { USER_ADDRESS, AMOUNT, ENDPOINTS, CHAIN, ASSET, getSigner } from '../utils'
+import { USER_ADDRESS, AMOUNT, ENDPOINTS, CHAIN, CHAINS, ASSET, getSigner } from '../utils'
 
 const main = async () => {
   paraport.init({
     integratedTargetId: 'root',
     label: 'Mint',
-   	address: USER_ADDRESS,
+  	address: USER_ADDRESS,
 		amount: AMOUNT,
 		chain: CHAIN,
+		chains: CHAINS,
 		asset: ASSET,
     endpoints: ENDPOINTS,
     logLevel: 'DEBUG',

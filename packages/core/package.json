@@ -1,6 +1,6 @@
 {
 	"name": "@paraport/core",
-	"version": "0.1.0-alpha.13",
+	"version": "0.1.11",
 	"description": "Core functionality for ParaPort SDK",
 	"keywords": ["paraport", "polkadot", "sdk", "blockchain"],
 	"license": "MIT",
@@ -21,21 +21,28 @@
 	"files": ["dist", "README.md", "LICENSE"],
 	"scripts": {
 		"papi:generate": "papi --whitelist .papi/whitelist.ts",
+		"papi:update": "papi update --whitelist .papi/whitelist.ts",
+		"prepare": "pnpm run papi:generate",
 		"build": "pnpm run papi:generate && vite build",
+		"build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly --outDir dist",
 		"pretest": "pnpm run papi:generate",
 		"dev": "vite build --watch --mode development",
 		"lint": "biome check --write .",
+		"typecheck": "tsc -p tsconfig.build.json --noEmit",
+		"test:typecheck": "tsc -p tsconfig.tests.json --noEmit",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
-		"test:e2e": "vitest run --config ./vitest.config.e2e.ts --sequence.concurrent"
+		"test:e2e": "vitest run --config ./vitest.config.e2e.ts --sequence.concurrent",
+		"test:e2e:live": "vitest run --config ./vitest.config.e2e.live.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@types/lodash": "^4.17.15",
+		"@polkadot/util": "13.5.7",
+		"@polkadot/util-crypto": "13.5.7",
 		"@vitest/coverage-v8": "3.1.2",
 		"jsdom": "^26.1.0",
-		"polkadot-api": "1.19.x",
+		"polkadot-api": "1.20.x",
 		"process": "^0.11.10",
 		"typescript": "^5.7.3",
 		"vite": "^6.0.7",
@@ -43,14 +50,14 @@
 		"vitest": "^3.1.2"
 	},
 	"peerDependencies": {
-		"polkadot-api": "1.19.x"
+		"polkadot-api": "1.20.x"
 	},
 	"dependencies": {
 		"@paraport/static": "workspace:*",
-		"@paraspell/sdk": "^11.8.6",
+		"@paraspell/sdk": "^11.13.0",
+		"@paraspell/sdk-core": "^11.13.0",
 		"dedot": "^0.16.0",
 		"eventemitter3": "^5.0.1",
-		"lodash": "^4.17.21",
 		"p-retry": "^6.2.1"
 	}
 }

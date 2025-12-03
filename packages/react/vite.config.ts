@@ -47,11 +47,13 @@ export default defineConfig(({ mode }) => ({
         }
       : undefined,
     rollupOptions: {
-      external: [
-        // React core
+      // Externalize React and polkadot-api (and its subpaths)
+      // so the host app provides a single runtime copy.
+      external: (id) => [
         'react',
         'react-dom',
-      ],
+        'polkadot-api'
+      ].includes(id) || id.startsWith('polkadot-api/'),
       output: {
         globals: {
           react: 'React',

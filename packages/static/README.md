@@ -80,3 +80,14 @@ pnpm build
 ## License
 
 MIT
+
+## Build
+
+- Build this package first so other packages can consume generated providers and dist outputs
+- From repo root: `pnpm --filter @paraport/static build`
+- Watch mode: `pnpm --filter @paraport/static dev`
+
+Topological order across packages:
+- `@paraport/static` → `@paraport/core` → `@paraport/vue` → `@paraport/sdk` → `@paraport/react`
+
+See TESTING.md for end-to-end build and test flow.

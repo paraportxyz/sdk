@@ -28,7 +28,7 @@ const sdk = new ParaPortSDK({
   getSigner: props.getSigner,
   logLevel: props.logLevel,
   endpoints: props.endpoints,
-  chains: undefined,
+  chains: props.chains,
 })
 
 store.setSdk(sdk)

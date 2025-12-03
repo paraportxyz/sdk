@@ -107,6 +107,18 @@ ParaPort Core declares `polkadot-api` as a peer dependency. Install it alongside
 pnpm add polkadot-api
 ```
 
+## Build
+
+- Prerequisite: build `@paraport/static` first (core depends on it)
+- From repo root:
+  - `pnpm --filter @paraport/static build`
+  - `pnpm --filter @paraport/core build`
+
+Topological order across packages:
+- `@paraport/static` → `@paraport/core` → `@paraport/vue` → `@paraport/sdk` → `@paraport/react`
+
+See TESTING.md for end-to-end build and test flow.
+
 ## Automated Token Movement Process
 
 The automated token movement feature simplifies cross-chain transfers by:

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b45d0026-9533-4e49-915b-085c1ac6ba84" alt="ParaPort Logo" width="420" />
+  <img src=".github/paraport.svg" alt="ParaPort Logo" width="420" />
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@ ParaPort enables “auto-teleport” flows in the Polkadot ecosystem — automat
 # Install workspace deps
 pnpm install
 
-# Build core (and related)
+# Build all packages (in correct order)
 pnpm build
 
 # Run all package dev builds in watch mode
@@ -44,6 +44,10 @@ Requirements
 - Node.js (LTS)
 - pnpm 9.1.3+
 
+## Testing
+
+See TESTING.md for a consolidated, step-by-step guide covering build order, commands to run unit/integration tests across packages, and the required environment variables for live E2E tests.
+
 ## Funding
 
 Project was funded as a common good by
@@ -51,5 +55,3 @@ Project was funded as a common good by
 <div align="center">
   <img width="200" alt="version" src="https://user-images.githubusercontent.com/55763425/211145923-f7ee2a57-3e63-4b7d-9674-2da9db46b2ee.png" />
 </div>
-
-

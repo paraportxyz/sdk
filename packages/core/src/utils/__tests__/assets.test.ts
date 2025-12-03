@@ -6,23 +6,23 @@ vi.mock('@paraspell/sdk', () => ({
   getAssetsObject: vi.fn((chain: Chain) => {
     if (chain === 'Hydration') {
       return {
-        nativeAssets: [{ symbol: 'HDX', existentialDeposit: 123n }],
+        nativeAssets: [{ symbol: 'HDX', existentialDeposit: 123n, decimals: 12 }],
         otherAssets: [
-          { symbol: 'DOT', assetId: 1 },
-          { symbol: 'USDT', location: { parents: 1, interior: 'Here' } },
+          { symbol: 'DOT', assetId: 1, decimals: 10 },
+          { symbol: 'USDT', location: { parents: 1, interior: 'Here' }, decimals: 6 },
         ],
       }
     }
     if (chain === 'AssetHubKusama') {
       return {
-        nativeAssets: [{ symbol: 'KSM' }],
-        otherAssets: [{ symbol: 'DOT', alias: 'DOT2' }],
+        nativeAssets: [{ symbol: 'KSM', decimals: 12 }],
+        otherAssets: [{ symbol: 'DOT', alias: 'DOT2', decimals: 10 }],
       }
     }
     if (chain === 'AssetHubPolkadot') {
       return {
-        nativeAssets: [{ symbol: 'DOT', existentialDeposit: 10n }],
-        otherAssets: [{ symbol: 'USDT', assetId: 1984 }],
+        nativeAssets: [{ symbol: 'DOT', existentialDeposit: 10n, decimals: 10 }],
+        otherAssets: [{ symbol: 'USDT', assetId: 1984, decimals: 6 }],
       }
     }
     // Default
@@ -32,10 +32,13 @@ vi.mock('@paraspell/sdk', () => ({
   ForeignAbstract: vi.fn((alias: string) => `FA(${alias})`),
 }))
 
-import { getParaspellCurrencyInput, getAssetInfoOrThrow, getAssetExistentialDeposit, isAssetSupported } from '@/utils/assets'
+import { getParaspellCurrencyInput, getAssetInfoOrThrow, getAssetExistentialDeposit, isAssetSupported, getAssetDecimals, isFeeAssetSupportedForRoute, __setAliasForTests, __resetAliasesForTests } from '@/utils/assets'
 
 describe('utils/assets.getParaspellCurrencyInput', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    __resetAliasesForTests()
+  })
 
   it('returns { location } when asset has location (foreign by location)', () => {
     const input = getParaspellCurrencyInput('Hydration' as Chain, 'USDT' as any)
@@ -53,6 +56,7 @@ describe('utils/assets.getParaspellCurrencyInput', () => {
   })
 
   it('returns { symbol: ForeignAbstract(alias) } when asset has alias', () => {
+    __setAliasForTests('AssetHubKusama' as Chain, 'DOT' as any, 'DOT2')
     const input = getParaspellCurrencyInput('AssetHubKusama' as Chain, 'DOT' as any)
     expect(input).toEqual({ symbol: 'FA(DOT2)' })
   })
@@ -76,7 +80,10 @@ describe('utils/assets.getAssetInfoOrThrow', () => {
 })
 
 describe('utils/assets.getAssetExistentialDeposit and isAssetSupported', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    __resetAliasesForTests()
+  })
 
   it('getAssetExistentialDeposit returns the asset ED when present', () => {
     expect(getAssetExistentialDeposit('Hydration' as Chain, 'HDX' as any)).toBe(123n)
@@ -99,6 +106,7 @@ describe('utils/assets.getAssetExistentialDeposit and isAssetSupported', () => {
     const mod = await import('@paraspell/sdk') as any
     // Supported list includes DOT, but with alias that does NOT match origin alias (expected DOT2)
     mod.getSupportedAssets.mockReturnValueOnce([{ symbol: 'DOT', alias: 'DOT1' }])
+    __setAliasForTests('AssetHubKusama' as Chain, 'DOT' as any, 'DOT2')
     expect(isAssetSupported('AssetHubKusama' as Chain, 'AssetHubPolkadot' as Chain, 'DOT' as any)).toBe(false)
   })
 
@@ -106,6 +114,108 @@ describe('utils/assets.getAssetExistentialDeposit and isAssetSupported', () => {
     const mod = await import('@paraspell/sdk') as any
     // Supported list includes DOT with alias matching origin (DOT2)
     mod.getSupportedAssets.mockReturnValueOnce([{ symbol: 'DOT', alias: 'DOT2' }])
+    __setAliasForTests('AssetHubKusama' as Chain, 'DOT' as any, 'DOT2')
     expect(isAssetSupported('AssetHubKusama' as Chain, 'AssetHubPolkadot' as Chain, 'DOT' as any)).toBe(true)
+  })
+})
+
+describe('utils/assets.getAssetDecimals', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    __resetAliasesForTests()
+  })
+
+  it('returns decimals for native assets when present', () => {
+    expect(getAssetDecimals('Hydration' as Chain, 'HDX' as any)).toBe(12)
+    expect(getAssetDecimals('AssetHubPolkadot' as Chain, 'DOT' as any)).toBe(10)
+  })
+
+  it('returns decimals for foreign assets by location/assetId when present', () => {
+    expect(getAssetDecimals('Hydration' as Chain, 'USDT' as any)).toBe(6)
+    expect(getAssetDecimals('Hydration' as Chain, 'DOT' as any)).toBe(10)
+  })
+
+  it('respects alias matching for chains with symbol aliases (e.g., DOT→DOT2)', () => {
+    __setAliasForTests('AssetHubKusama' as Chain, 'DOT' as any, 'DOT2')
+    expect(getAssetDecimals('AssetHubKusama' as Chain, 'DOT' as any)).toBe(10)
+  })
+
+  it('returns undefined when the asset is not present on chain', () => {
+    expect(getAssetDecimals('Hydration' as Chain, 'XYZ' as any)).toBeUndefined()
+  })
+})
+
+describe('utils/assets.isFeeAssetSupportedForRoute', () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it('returns true when origin asset is marked as fee asset and destination is supported', async () => {
+    const mod = await import('@paraspell/sdk') as any
+    // Only the first call (origin) matters for this check
+    mod.getAssetsObject.mockImplementationOnce((chain: Chain) => {
+      if (chain === 'Hydration') {
+        return {
+          nativeAssets: [{ symbol: 'HDX', isFeeAsset: true }],
+          otherAssets: [],
+        }
+      }
+      return { nativeAssets: [], otherAssets: [] }
+    })
+
+    const ok = isFeeAssetSupportedForRoute({
+      origin: 'Hydration' as Chain,
+      destination: 'AssetHubPolkadot' as Chain,
+      symbol: 'HDX' as any,
+    })
+
+    expect(ok).toBe(true)
+  })
+
+  it('returns false when destination is HydrationPaseo even if asset is fee asset', async () => {
+    const mod = await import('@paraspell/sdk') as any
+    mod.getAssetsObject.mockImplementationOnce((chain: Chain) => {
+      if (chain === 'Hydration') {
+        return { nativeAssets: [{ symbol: 'HDX', isFeeAsset: true }], otherAssets: [] }
+      }
+      return { nativeAssets: [], otherAssets: [] }
+    })
+
+    const ok = isFeeAssetSupportedForRoute({
+      origin: 'Hydration' as Chain,
+      destination: 'HydrationPaseo' as Chain,
+      symbol: 'HDX' as any,
+    })
+
+    expect(ok).toBe(false)
+  })
+
+  it('returns false when asset is not a fee asset on origin', async () => {
+    const mod = await import('@paraspell/sdk') as any
+    mod.getAssetsObject.mockImplementationOnce((chain: Chain) => {
+      if (chain === 'Hydration') {
+        return { nativeAssets: [{ symbol: 'HDX' }], otherAssets: [] }
+      }
+      return { nativeAssets: [], otherAssets: [] }
+    })
+
+    const ok = isFeeAssetSupportedForRoute({
+      origin: 'Hydration' as Chain,
+      destination: 'AssetHubKusama' as Chain,
+      symbol: 'HDX' as any,
+    })
+
+    expect(ok).toBe(false)
+  })
+
+  it('returns false when asset is not present on origin chain', async () => {
+    const mod = await import('@paraspell/sdk') as any
+    mod.getAssetsObject.mockImplementationOnce((_chain: Chain) => ({ nativeAssets: [], otherAssets: [] }))
+
+    const ok = isFeeAssetSupportedForRoute({
+      origin: 'Hydration' as Chain,
+      destination: 'AssetHubKusama' as Chain,
+      symbol: 'UNKNOWN' as any,
+    })
+
+    expect(ok).toBe(false)
   })
 })

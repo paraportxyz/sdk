@@ -46,9 +46,12 @@ export default defineConfig(({ mode }) => ({
         }
       : undefined,
     rollupOptions: {
-      external: [
+      // Externalize framework + polkadot-api so the host app provides
+      // a single runtime copy (prevents bundling a second copy inside dist).
+      external: id => [
         'vue',
-      ],
+        'polkadot-api',
+      ].includes(id) || id.startsWith('polkadot-api/'),
       output: {
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'style.css')

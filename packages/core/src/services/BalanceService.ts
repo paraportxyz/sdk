@@ -81,14 +81,19 @@ export default class BalanceService {
 			const assetId = Number((assetInfo as TForeignAssetInfo)?.assetId)
 			const location = (assetInfo as TForeignAssetInfo).location
 
-			if (chain === 'Hydration') {
+			if (chain === 'Hydration' || chain === 'HydrationPaseo') {
 				amount = await (
-					api as ApiMap['Hydration']
+					api as ApiMap['Hydration'] | ApiMap['HydrationPaseo']
 				).apis.CurrenciesApi.free_balance(assetId, formattedAddress)
-			} else if (chain === 'AssetHubPolkadot' || chain === 'AssetHubKusama') {
+			} else if (
+				chain === 'AssetHubPolkadot' ||
+				chain === 'AssetHubKusama' ||
+				chain === 'AssetHubPaseo'
+			) {
 				const typedApi = api as
 					| ApiMap['AssetHubPolkadot']
 					| ApiMap['AssetHubKusama']
+					| ApiMap['AssetHubPaseo']
 				if (location) {
 					const response = await typedApi.query.ForeignAssets.Account.getValue(
 						transform(location),
@@ -147,14 +152,20 @@ export default class BalanceService {
 		{ address, asset, chains }: GetBalancesParams,
 		callback: () => void,
 	) {
+		this.logger.debug('Subscribing to balance changes', {
+			chains,
+			asset,
+			address,
+		})
+
 		const balancePromises = chains.map(async (chain) => {
 			const { api, client } = this.api.getInstance(chain)
 			const formattedAddress = formatAddress(address, chain)
 			const assetInfo = getAssetInfoOrThrow(chain, asset)
 
 			// Hydration uses multi-currency balances via runtime API (CurrenciesApi)
-			if (chain === 'Hydration') {
-				const hydApi = api as ApiMap['Hydration']
+			if (chain === 'Hydration' || chain === 'HydrationPaseo') {
+				const hydApi = api as ApiMap['Hydration'] | ApiMap['HydrationPaseo']
 				const assetId = Number(getAssetId(chain, asset))
 
 				let previousFree = await hydApi.apis.CurrenciesApi.free_balance(
@@ -202,10 +213,15 @@ export default class BalanceService {
 
 				// Foreign assets (by location or assetId) — prefer pallet subscriptions when available.
 				const foreignAsset = assetInfo as TForeignAssetInfo
-				if (chain === 'AssetHubPolkadot' || chain === 'AssetHubKusama') {
+				if (
+					chain === 'AssetHubPolkadot' ||
+					chain === 'AssetHubKusama' ||
+					chain === 'AssetHubPaseo'
+				) {
 					const typedApi = api as
 						| ApiMap['AssetHubPolkadot']
 						| ApiMap['AssetHubKusama']
+						| ApiMap['AssetHubPaseo']
 					// Prefer ForeignAssets by location
 					if (foreignAsset.location) {
 						const initial = await typedApi.query.ForeignAssets.Account.getValue(
@@ -310,6 +326,54 @@ export default class BalanceService {
 			return balance
 		} catch (error) {
 			this.logger.error('Error waiting for sufficient balance:', error)
+			throw error
+		}
+	}
+
+	/**
+	 * Polls until the transferable balance increases by at least the specified delta.
+	 * Captures the baseline on the first poll and computes a fixed target: baseline + delta.
+	 *
+	 * @param params - Address, asset, chain and required delta increase
+	 * @returns First balance that satisfies the baseline + delta threshold
+	 */
+	async waitForFundsIncrease({
+		address,
+		asset,
+		chain,
+		delta,
+	}: {
+		address: string
+		asset: Asset
+		chain: Chain
+		delta: bigint
+	}): Promise<Balance> {
+		let target: bigint | null = null
+
+		const getBalanceAttempt = async (): Promise<Balance> => {
+			const current = await this.getBalance({ address, asset, chain })
+
+			if (target === null) {
+				// Capture baseline on first successful read
+				target = current.transferable + BigInt(delta)
+			}
+
+			if (current.transferable >= target) {
+				return current
+			}
+
+			throw new Error('Increase threshold not met yet.')
+		}
+
+		try {
+			const balance = await pRetry(getBalanceAttempt, {
+				retries: 100,
+				minTimeout: 5000,
+				maxTimeout: 10000,
+			})
+			return balance
+		} catch (error) {
+			this.logger.error('Error waiting for balance increase:', error)
 			throw error
 		}
 	}

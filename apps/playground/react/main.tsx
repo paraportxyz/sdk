@@ -1,4 +1,4 @@
-import { USER_ADDRESS, AMOUNT } from '../utils'
+import { USER_ADDRESS, AMOUNT, getSigner, ASSET, CHAIN, CHAINS } from '../utils'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { Paraport } from '@paraport/react'
@@ -14,8 +14,11 @@ const main = async () => {
           label="Mint"
           address={USER_ADDRESS}
           amount={AMOUNT}
-          chain="AssetHubKusama"
-          asset="KSM"
+          chain={CHAIN}
+          chains={CHAINS}
+          asset={ASSET}
+          logLevel="DEBUG"
+          getSigner={getSigner}
           onReady={(session) => {
             console.log('🚀 ParaPort ready!', session)
           }}

@@ -1,5 +1,7 @@
 {
   "name": "@paraport/playground",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite"
@@ -9,7 +11,7 @@
     "@paraport/sdk": "workspace:*",
     "@paraport/vue": "workspace:*",
     "@vitejs/plugin-vue": "^5.2.1",
-    "polkadot-api": "1.19.2",
+    "polkadot-api": "1.20.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "vue": "^3.5.13"

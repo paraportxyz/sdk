@@ -54,6 +54,7 @@ export const PROVIDERS = {
 	// Kusama Relay Chain (KSM)
 	Kusama: [
 		'wss://kusama-rpc.publicnode.com',
+		'wss://kusama-public-rpc.blockops.network/ws',
 		'wss://kusama-rpc.n.dwellir.com',
 		'wss://kusama-rpc-tn.dwellir.com',
 		'wss://rpc-kusama.helixstreet.io',
@@ -72,6 +73,24 @@ export const PROVIDERS = {
 		'wss://rpc.helikon.io/hydradx',
 		'wss://hydration.ibp.network',
 		'wss://hydration.dotters.network',
+	] as const,
+
+	// Paseo Asset Hub (AHPAS)
+	AssetHubPaseo: [
+		'wss://asset-hub-paseo-rpc.n.dwellir.com',
+		'wss://sys.ibp.network/asset-hub-paseo',
+		'wss://asset-hub-paseo.dotters.network',
+		'wss://pas-rpc.stakeworld.io/assethub',
+		'wss://sys.turboflakes.io/asset-hub-paseo',
+	] as const,
+
+	// Paseo Hydration (HYDPAS)
+	HydrationPaseo: ['wss://paseo-rpc.play.hydration.cloud'] as const,
+
+	// Paseo Coretime (COPAS)
+	CoretimePaseo: [
+		'wss://sys.ibp.network/coretime-paseo',
+		'wss://coretime-paseo.dotters.network',
 	] as const,
 } as const
 

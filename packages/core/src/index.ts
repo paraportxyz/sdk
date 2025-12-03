@@ -8,6 +8,6 @@ export * from './types/teleport'
 export * from './types/transactions'
 export * from './types/sdk'
 
-export { getAssetDecimals } from '@paraspell/sdk'
+export { getAssetDecimals } from '@/utils/assets'
 export { getChainName, blockExplorerOf } from './utils'
-export type { Chain } from '@paraport/static'
+export type { Chain, Asset } from '@paraport/static'

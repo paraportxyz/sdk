@@ -1,6 +1,6 @@
 {
 	"name": "@paraport/static",
-	"version": "0.0.2-alpha.3",
+	"version": "0.0.6",
 	"description": "Static configuration and constants for ParaPort SDK",
 	"keywords": ["paraport", "polkadot", "sdk", "blockchain"],
 	"author": "Paraport",
@@ -25,12 +25,13 @@
 		"build": "vite build",
 		"dev": "vite build --watch --mode development",
 		"lint": "biome check --write .",
+		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"generate": "node scripts/generate-providers.mjs && pnpm exec biome format --write src/providers.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@polkadot/apps-config": "^0.164.1",
-		"@types/node": "^22.14.1",
+		"@polkadot/apps-config": "^0.167.1",
+		"@types/node": "^20.0.0",
 		"typescript": "^5.7.3",
 		"vite": "^6.0.7",
 		"vite-plugin-dts": "^4.5.0"

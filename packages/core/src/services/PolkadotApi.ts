@@ -1,4 +1,4 @@
-import { ahk, ahp, dot, hyd, ksm } from '@/descriptors'
+import { ahk, ahp, ahpas, copas, dot, hyd, hydpas, ksm } from '@/descriptors'
 import type { SDKConfig } from '@/types/common'
 import type { Chain } from '@paraport/static'
 import { Chains, PROVIDERS } from '@paraport/static'
@@ -28,6 +28,18 @@ const config = {
 		descriptor: hyd,
 		providers: PROVIDERS.Hydration,
 	},
+	[Chains.AssetHubPaseo]: {
+		descriptor: ahpas,
+		providers: PROVIDERS.AssetHubPaseo,
+	},
+	[Chains.CoretimePaseo]: {
+		descriptor: copas,
+		providers: PROVIDERS.CoretimePaseo,
+	},
+	[Chains.HydrationPaseo]: {
+		descriptor: hydpas,
+		providers: PROVIDERS.HydrationPaseo,
+	},
 }
 
 export type SupportedChain = keyof typeof config
@@ -43,7 +55,7 @@ export type ApiMap = {
 export default class PolkadotApi {
 	private clients = new Map<SupportedChain, PolkadotClient>()
 
-	constructor(private readonly config: SDKConfig<false>) {}
+	constructor(private readonly config: SDKConfig) {}
 
 	/**
 	 * Retrieves a typed API client for a chain, creating it on-demand.

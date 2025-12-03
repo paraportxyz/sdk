@@ -36,7 +36,15 @@ export interface TeleportDetails
 	id: string
 	details: {
 		address: string
+		/**
+		 * Gross amount sent from origin (includes fees when applicable)
+		 */
 		amount: bigint
+		/**
+		 * Net amount expected to be received on destination.
+		 * Used to verify completion by comparing destination balance increase.
+		 */
+		receiveAmount: bigint
 		asset: Asset
 		route: Route
 	}

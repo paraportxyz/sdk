@@ -9,6 +9,7 @@ function Paraport({
   amount,
   chain,
   asset,
+  chains,
   onSubmit,
   onCompleted,
   onReady,
@@ -38,6 +39,7 @@ function Paraport({
       address,
       chain,
       asset,
+      chains,
       // Optional
       displayMode,
       appearance,

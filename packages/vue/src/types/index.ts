@@ -48,6 +48,16 @@ export interface CoreConfigParams {
    * @default 'INFO'
    */
   logLevel?: ClientSDKConfig['logLevel']
+
+  /**
+   * Endpoints for the SDK.
+   */
+  endpoints?: ClientSDKConfig['endpoints']
+
+  /**
+   * chains for the SDK.
+   */
+  chains?: ClientSDKConfig['chains']
 }
 
 export type ParaportParams = TeleportParams<string>
@@ -96,11 +106,6 @@ export type ParaportParams = TeleportParams<string>
      * @default false
      */
     disabled?: boolean
-
-    /**
-     * Endpoints for the SDK.
-     */
-    endpoints?: ClientSDKConfig['endpoints']
   }
 
 export interface ParaportEvents {

@@ -14,5 +14,5 @@ export const transferableBalanceOf = (
 ): bigint => {
 	const ed = BigInt(getAssetExistentialDeposit(chain, asset) ?? 0)
 
-	return amount - ed
+	return BigInt(Math.max(0, Number(amount - ed)))
 }

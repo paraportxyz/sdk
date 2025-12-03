@@ -17,6 +17,20 @@ ParaPort SDK requires `polkadot-api` in your application. Install it as a peer d
 pnpm add polkadot-api
 ```
 
+## Build
+
+- Prerequisites: build `@paraport/static`, `@paraport/core`, and `@paraport/vue` first
+- From repo root:
+  - `pnpm --filter @paraport/static build`
+  - `pnpm --filter @paraport/core build`
+  - `pnpm --filter @paraport/vue build`
+  - `pnpm --filter @paraport/sdk build`
+
+Topological order across packages:
+- `@paraport/static` → `@paraport/core` → `@paraport/vue` → `@paraport/sdk` → `@paraport/react`
+
+See TESTING.md for end-to-end build and test flow.
+
 ## Component Usage
 
 ### Basic Integration
@@ -107,6 +121,7 @@ paraport.init({
 | address | string | User's address |
 | amount | string | Amount to be teleported |
 | chain | string | Chain to be teleported to |
+| chains | string[] | Optional list of allowed chains to scope routing/UX |
 | asset | string | Asset to be teleported |
 | endpoints | Record<string, string[]> | Optional RPC endpoints per chain to override defaults |
 | getSigner | () => Promise<PolkadotSigner> | Required function returning a polkadot-api signer |

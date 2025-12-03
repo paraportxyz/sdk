@@ -59,4 +59,4 @@ build-vue:
 
 dev-playground:
 	@echo "🚀 Starting playground..."
-	cd packages/playground && pnpm run dev
+	cd apps/playground && pnpm run dev

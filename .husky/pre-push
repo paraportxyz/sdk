@@ -1,0 +1,2 @@
+# Run repository type checks before pushing
+pnpm typecheck

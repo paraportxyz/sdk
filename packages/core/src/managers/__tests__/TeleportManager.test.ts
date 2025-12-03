@@ -30,8 +30,8 @@ describe('TeleportManager', () => {
     }
     const registry = { get: vi.fn().mockReturnValue(bridge) } as unknown as BridgeRegistry
 
-    // Make waitForFunds resolve immediately
-    vi.spyOn(BalanceService.prototype, 'waitForFunds').mockResolvedValue({ transferable: 1n } as any)
+    // Make waitForFundsIncrease resolve immediately
+    vi.spyOn(BalanceService.prototype, 'waitForFundsIncrease').mockResolvedValue({ transferable: 1n } as any)
 
     const tm = new TeleportManager(
       new GenericEmitter(),
@@ -84,7 +84,7 @@ describe('TeleportManager', () => {
     }
     const registry = { get: vi.fn().mockReturnValue(bridge) } as unknown as BridgeRegistry
 
-    vi.spyOn(BalanceService.prototype, 'waitForFunds').mockResolvedValue({ transferable: 1n } as any)
+    vi.spyOn(BalanceService.prototype, 'waitForFundsIncrease').mockResolvedValue({ transferable: 1n } as any)
 
     const tm = new TeleportManager(new GenericEmitter(), registry, makePapi(), makeLogger())
 

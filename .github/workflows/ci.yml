@@ -45,6 +45,26 @@ jobs:
       - name: ESLint (vue)
         run: pnpm --filter @paraport/vue exec eslint . --max-warnings=0
 
+      # Typecheck prerequisites
+      - name: Bootstrap types for typecheck
+        run: pnpm -w run ci:bootstrap
+
+      # Typecheck steps
+      - name: Typecheck (static)
+        run: pnpm --filter @paraport/static run typecheck
+
+      - name: Typecheck (core)
+        run: pnpm --filter @paraport/core run typecheck
+
+      - name: Typecheck (vue)
+        run: pnpm --filter @paraport/vue run typecheck
+
+      - name: Typecheck (sdk)
+        run: pnpm --filter @paraport/sdk run typecheck
+
+      - name: Typecheck (react)
+        run: pnpm --filter @paraport/react run typecheck
+
   test:
     name: Test (Node 20.x)
     runs-on: ubuntu-latest
@@ -71,6 +91,35 @@ jobs:
 
       - name: Unit tests (@paraport/core)
         run: pnpm --filter @paraport/core test
+        env:
+          CI: true
+
+      - name: Mocked E2E (@paraport/core)
+        run: pnpm --filter @paraport/core run test:e2e
+        env:
+          CI: true
+
+      - name: Build @paraport/core (for Vue tests)
+        run: pnpm --filter @paraport/core build
+
+      - name: Unit tests (@paraport/vue)
+        run: pnpm --filter @paraport/vue test
+        env:
+          CI: true
+
+      - name: Build @paraport/vue (for SDK tests)
+        run: pnpm --filter @paraport/vue build
+
+      - name: Unit tests (@paraport/sdk)
+        run: pnpm --filter @paraport/sdk test
+        env:
+          CI: true
+
+      - name: Build @paraport/sdk (for React tests)
+        run: pnpm --filter @paraport/sdk build
+
+      - name: Unit tests (@paraport/react)
+        run: pnpm --filter @paraport/react test
         env:
           CI: true
 

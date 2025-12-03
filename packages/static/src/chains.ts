@@ -1,5 +1,5 @@
 import { type Asset, Assets, type ChainProperties, type Config } from './types'
-import { type Chain, Chains } from './types'
+import { Chains } from './types'
 
 export const toChainProperty = (
 	ss58Format: number,
@@ -46,13 +46,22 @@ export const CHAINS: Config<ChainProperties> = {
 		Assets.HDX,
 		'https://hydradx.subscan.io',
 	),
-}
-
-// TODO: remove
-export const existentialDeposit: Record<Chain, number> = {
-	[Chains.Polkadot]: 1e10,
-	[Chains.AssetHubPolkadot]: 1e8,
-	[Chains.Kusama]: 333333333,
-	[Chains.AssetHubKusama]: 333333333,
-	[Chains.Hydration]: 1000000000000,
+	[Chains.AssetHubPaseo]: toChainProperty(
+		2,
+		10,
+		Assets.PAS,
+		'https://assethub-paseo.subscan.io/',
+	),
+	[Chains.CoretimePaseo]: toChainProperty(
+		2,
+		10,
+		Assets.PAS,
+		'https://coretime-paseo.subscan.io/',
+	),
+	[Chains.HydrationPaseo]: toChainProperty(
+		2,
+		12,
+		Assets.HDX,
+		'https://hydradx-paseo.subscan.io/',
+	),
 }

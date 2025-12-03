@@ -1,6 +1,6 @@
 {
 	"name": "@paraport/sdk",
-	"version": "0.1.0-alpha.4",
+	"version": "0.1.12",
 	"description": "ParaPort Embedded UI",
 	"keywords": ["paraport", "polkadot", "sdk"],
 	"author": "Paraport",
@@ -24,10 +24,12 @@
 	"scripts": {
 		"dev": "vite build --watch --mode development",
 		"build": "vite build",
-		"lint": "biome check --write ."
+		"lint": "biome check --write .",
+		"typecheck": "tsc -p tsconfig.json --noEmit",
+		"test": "vitest run"
 	},
 	"peerDependencies": {
-		"polkadot-api": "1.19.x"
+		"polkadot-api": "1.20.x"
 	},
 	"dependencies": {
 		"@paraport/vue": "workspace:*",
@@ -35,10 +37,13 @@
 		"vue": "^3.5.13"
 	},
 	"devDependencies": {
-		"polkadot-api": "1.19.x",
+		"polkadot-api": "1.20.x",
 		"@biomejs/biome": "^1.9.4",
+		"@vitest/coverage-v8": "^3.1.2",
+		"jsdom": "^26.1.0",
 		"typescript": "^5.7.3",
 		"vite": "^6.0.7",
-		"vite-plugin-dts": "^4.5.0"
+		"vite-plugin-dts": "^4.5.0",
+		"vitest": "^3.1.2"
 	}
 }

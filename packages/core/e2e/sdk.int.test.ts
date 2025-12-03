@@ -8,10 +8,11 @@ describe.sequential(
 	'Integration: XCMBridge transfer (serialized tx snapshot)',
 	() => {
 		// Mock utils used by the bridge (no formatting side-effects, deterministic)
-		vi.mock('@/utils', () => ({
-			formatAddress: vi.fn((a: string) => a),
-			getChainsOfAsset: vi.fn(() => [Chains.Kusama, Chains.AssetHubKusama]),
-		}))
+    vi.mock('@/utils', () => ({
+        formatAddress: vi.fn((a: string) => a),
+        getChainsOfAsset: vi.fn(() => [Chains.Kusama, Chains.AssetHubKusama]),
+        getRouteChains: vi.fn((_dest: string, _asset: string) => [Chains.Kusama, Chains.AssetHubKusama]),
+    }))
 
 		// Use paraspell Builder mock with fixed fees and a serializable tx
 		vi.mock('@paraspell/sdk', () => {

@@ -20,10 +20,30 @@ import {
  * catalog entries. For example, on AssetHubKusama, DOT is represented as
  * `DOT2` in Paraspell's catalog.
  */
-const aliasMap: Partial<Record<Chain, Partial<Record<Asset, string>>>> = {
-	AssetHubKusama: {
-		DOT: 'DOT2',
-	},
+type AliasMap = Partial<Record<Chain, Partial<Record<Asset, string>>>>
+const aliasMap: AliasMap = {}
+
+export const __resetAliasesForTests = () => {
+	for (const k of Object.keys(aliasMap) as (keyof typeof aliasMap)[]) {
+		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+		delete aliasMap[k]
+	}
+}
+
+export const __setAliasForTests = (
+	chain: Chain,
+	symbol: Asset,
+	alias?: string,
+) => {
+	if (!aliasMap[chain]) {
+		aliasMap[chain] = {}
+	}
+	const entry = aliasMap[chain] as NonNullable<AliasMap[Chain]>
+	if (alias === undefined) {
+		delete entry[symbol]
+	} else {
+		entry[symbol] = alias
+	}
 }
 
 /**
@@ -151,4 +171,59 @@ export const isAssetSupported = (
 	}
 
 	return supported.some((info) => info.symbol === asset)
+}
+
+/**
+ * Returns the number of decimal places for `symbol` on `chain` when
+ * available in Paraspell's assets catalog.
+ *
+ * Notes
+ * - Looks up the asset via `getAssetInfo`, respecting chain-specific
+ *   aliasing rules (e.g., DOT → DOT2 on AssetHubKusama).
+ * - Not all catalog entries include a `decimals` field; in those cases
+ *   `undefined` is returned so callers can provide a fallback if needed.
+ *
+ * @param chain - Chain identifier
+ * @param symbol - Asset symbol
+ * @returns The asset's decimals count if present; otherwise `undefined`.
+ */
+export const getAssetDecimals = (chain: Chain, symbol: Asset) => {
+	const asset = getAssetInfo(chain, symbol)
+
+	return asset?.decimals
+}
+
+/**
+ * Determines if an asset can be used to pay execution fees for a specific
+ * origin → destination route.
+ *
+ * Rules
+ * - The asset must be marked as `isFeeAsset` for the origin chain in the
+ *   Paraspell assets catalog.
+ * - Some routes disallow fee payment in certain assets (e.g., when the
+ *   destination does not recognize the reserve). This helper encodes such
+ *   route-specific safeguards to avoid builder/runtime errors.
+ *
+ * Notes
+ * - This is a lightweight guard used before building calls that would fail if
+ *   an unsupported fee asset is selected for the given route.
+ *
+ * @param origin - Origin chain identifier.
+ * @param destination - Destination chain identifier.
+ * @param symbol - Asset symbol to check on the origin chain.
+ * @returns `true` if the asset is a fee asset on `origin` and the route is
+ *   permitted; otherwise `false`.
+ */
+export const isFeeAssetSupportedForRoute = ({
+	origin,
+	destination,
+	symbol,
+}: { origin: Chain; destination: Chain; symbol: Asset }): boolean => {
+	const asset = getAssetInfo(origin, symbol)
+
+	return (
+		Boolean(asset?.isFeeAsset) &&
+		// throws InvalidAssetUnknownReserve
+		!(destination === 'HydrationPaseo')
+	)
 }

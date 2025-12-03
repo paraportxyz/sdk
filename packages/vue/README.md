@@ -17,6 +17,19 @@ ParaPort Vue requires `polkadot-api` in your application. Install it as a peer d
 pnpm add polkadot-api
 ```
 
+## Build
+
+- Prerequisites: `@paraport/static` and `@paraport/core` must be built first
+- From repo root:
+  - `pnpm --filter @paraport/static build`
+  - `pnpm --filter @paraport/core build`
+  - `pnpm --filter @paraport/vue build`
+
+Topological order across packages:
+- `@paraport/static` → `@paraport/core` → `@paraport/vue` → `@paraport/sdk` → `@paraport/react`
+
+See TESTING.md for end-to-end build and test flow.
+
 ## Component Usage
 
 ### Basic Integration (component-first)

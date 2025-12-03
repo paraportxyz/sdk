@@ -11,9 +11,12 @@ export default defineConfig({
       formats: ['es', 'umd']
     },
     rollupOptions: {
-      external: [
-        'vue'
-      ],
+      // Avoid bundling polkadot-api to prevent duplicate copies in hosts.
+      // Keep Vue external too.
+      external: (id) => [
+        'vue',
+        'polkadot-api'
+      ].includes(id) || id.startsWith('polkadot-api/'),
       output: {
         globals: {
           vue: 'Vue'

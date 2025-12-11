@@ -32,13 +32,6 @@ const sdk = new ParaPortSDK({
 })
 
 store.setSdk(sdk)
-store.setTeleportParams({
-  chain: props.chain,
-  address: props.address,
-  asset: props.asset,
-  amount: props.amount,
-  teleportMode: props.teleportMode,
-})
 
 props.ui && store.setUi(props.ui)
 props.appearance && store.setAppearance(props.appearance)
@@ -50,6 +43,16 @@ watchEffect(() => {
   store.setLabel(props.label || '')
   store.setDisabled(props.disabled || false)
   store.setAppearance(props.appearance)
+})
+
+watchEffect(() => {
+  store.setTeleportParams({
+    chain: props.chain,
+    address: props.address,
+    asset: props.asset,
+    amount: props.amount,
+    teleportMode: props.teleportMode,
+  })
 })
 
 eventBus.on('session:ready', () => emits('completed'))

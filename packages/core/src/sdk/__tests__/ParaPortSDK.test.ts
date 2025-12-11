@@ -11,7 +11,7 @@ describe('ParaPortSDK', () => {
 		chains: [Chains.Kusama, Chains.AssetHubKusama],
 		bridgeProtocols: ['XCM'],
 		getSigner: async () => {
-		  return null as any
+			return null as any
 		}
 	}
 
@@ -77,5 +77,26 @@ describe('ParaPortSDK', () => {
 				sdk.validateTeleportParams(invalidParams)
 			}).toThrow('Invalid teleport mode')
 		})
+	})
+
+	describe('initSession with prepareTeleportParams', () => {
+		it('applies default teleportMode when not provided', async () => {
+			const { vi } = await import('vitest')
+			const BalanceService = (await import('@/services/BalanceService')).default
+
+			vi.spyOn(BalanceService.prototype, 'hasEnoughBalance').mockResolvedValue(true)
+			vi.spyOn(BalanceService.prototype, 'subscribeBalances').mockResolvedValue(() => { })
+
+			await sdk.initialize()
+
+			const session = await sdk.initSession({
+				address: SUBSTRATE_ADDRESS,
+				amount: '100',
+				asset: Assets.KSM,
+				chain: Chains.AssetHubKusama,
+			} as any)
+
+			expect(session.params.teleportMode).toBe(TeleportModes.Expected)
+		}, 20000)
 	})
 })

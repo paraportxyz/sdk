@@ -219,6 +219,71 @@ export default class ParaPortSDK extends Initializable {
 	}
 
 	/**
+	 * Calculates teleport quotes and subscribes to balance changes.
+	 * Reusable helper for session initialization and param updates.
+	 *
+	 * @param params - Teleport parameters
+	 * @param sessionId - Session ID or getter function (deferred for initSession)
+	 * @returns Quotes, funds status, and unsubscribe function
+	 */
+	private async calculateAndSubscribe(
+		params: TeleportParams,
+		sessionId: string | (() => string),
+	): Promise<{
+		quotes: AutoTeleportSessionCalculation['quotes']
+		funds: AutoTeleportSessionCalculation['funds']
+		unsubscribe: () => void
+	}> {
+		const getSessionId =
+			typeof sessionId === 'function' ? sessionId : () => sessionId
+
+		const [{ quotes, funds }, unsubscribe] = await Promise.all([
+			this.calculateTeleport(params),
+			this.subscribeBalanceChanges(params, async () => {
+				const newState = await this.calculateTeleport(params)
+				this.sessionManager.updateSession(getSessionId(), {
+					quotes: newState.quotes,
+					funds: newState.funds,
+				})
+			}),
+		])
+
+		return { quotes, funds, unsubscribe }
+	}
+
+	/**
+	 * Normalizes teleport parameters by applying default values.
+	 * Ensures teleportMode defaults to TeleportModes.Expected if not provided.
+	 *
+	 * @param params - Raw teleport parameters
+	 * @returns Normalized teleport parameters with defaults applied
+	 */
+	private normalizeParams(
+		params: TeleportParams<string>,
+	): TeleportParams<string> {
+		return {
+			...params,
+			teleportMode: params.teleportMode || TeleportModes.Expected,
+		}
+	}
+
+	/**
+	 * Prepares teleport parameters by normalizing, validating, and converting to bigint.
+	 * Ensures consistent parameter handling across session initialization and updates.
+	 *
+	 * @param params - Raw teleport parameters with string amount
+	 * @returns Validated teleport parameters with bigint amount
+	 * @throws {InvalidTeleportParamsError} If parameters fail validation
+	 */
+	private prepareTeleportParams(
+		params: TeleportParams<string>,
+	): TeleportParams {
+		const normalized = this.normalizeParams(params)
+		this.validateTeleportParams(normalized)
+		return convertToBigInt(normalized, ['amount'])
+	}
+
+	/**
 	 * Creates a new auto-teleport session for the provided parameters.
 	 * Performs validation, resolves quotes, and watches balances.
 	 *
@@ -227,33 +292,22 @@ export default class ParaPortSDK extends Initializable {
 	 * @throws {InvalidTeleportParamsError} If parameters fail validation
 	 */
 	async initSession(p: TeleportParams<string>): Promise<TeleportSession> {
-		const allParams = {
-			...p,
-			teleportMode: p.teleportMode || TeleportModes.Expected,
-		}
-
 		this.ensureInitialized()
-		this.validateTeleportParams(allParams)
-
-		const params = convertToBigInt(allParams, ['amount'])
+		const params = this.prepareTeleportParams(p)
 
 		this.logger.debug('Starting to calculate teleport with params', params)
 
-		const [{ quotes, funds }, unsubscribe] = await Promise.all([
-			this.calculateTeleport(params),
-			this.subscribeBalanceChanges(params, async () => {
-				const newState = await this.calculateTeleport(params)
+		// biome-ignore lint/style/useConst: sessionId is assigned after the getter closure is created
+		let sessionId: string
 
-				this.sessionManager.updateSession(sessionId, {
-					quotes: newState.quotes,
-					funds: newState.funds,
-				})
-			}),
-		])
+		const { quotes, funds, unsubscribe } = await this.calculateAndSubscribe(
+			params,
+			() => sessionId,
+		)
 
 		this.logger.debug('Calculated teleport', { quotes, funds })
 
-		const sessionId = this.sessionManager.createSession(params, {
+		sessionId = this.sessionManager.createSession(params, {
 			status: TeleportSessionStatuses.Ready,
 			quotes,
 			funds,
@@ -314,6 +368,74 @@ export default class ParaPortSDK extends Initializable {
 		)
 
 		return teleport.id
+	}
+
+	/**
+	 * Updates teleport parameters for an existing session.
+	 * Recalculates quotes and resubscribes to balance changes with new params.
+	 *
+	 * @param sessionId - ID of the session to update
+	 * @param params - New teleport parameters
+	 * @returns Updated session
+	 * @throws {InvalidTeleportParamsError} If parameters fail validation
+	 * @throws {InvalidSessionError} If session state is invalid for update
+	 */
+	public async updateSessionParams(
+		sessionId: string,
+		p: TeleportParams<string>,
+	): Promise<TeleportSession> {
+		this.ensureInitialized()
+		const params = this.prepareTeleportParams(p)
+
+		const session = this.sessionManager.getItem(sessionId)
+
+		if (!session) {
+			throw new InvalidSessionError('Session not found')
+		}
+
+		if (
+			session.status === TeleportSessionStatuses.Completed ||
+			session.status === TeleportSessionStatuses.Processing
+		) {
+			throw new InvalidSessionError('Session is completed or processing')
+		}
+
+		if (session.teleportId) {
+			throw new InvalidSessionError(
+				'Cannot update params after teleport started',
+			)
+		}
+
+		if (session.status === TeleportSessionStatuses.Failed) {
+			throw new InvalidSessionError('Cannot update params for a failed session')
+		}
+
+		session.unsubscribe()
+
+		this.sessionManager.updateSession(sessionId, {
+			status: TeleportSessionStatuses.Pending,
+		})
+
+		const { quotes, funds, unsubscribe } = await this.calculateAndSubscribe(
+			params,
+			sessionId,
+		)
+
+		this.sessionManager.updateSession(sessionId, {
+			status: TeleportSessionStatuses.Ready,
+			params,
+			quotes,
+			funds,
+			unsubscribe,
+		})
+
+		const updatedSession = this.sessionManager.getItem(sessionId)
+
+		if (!updatedSession) {
+			throw new Error('Session not found after update')
+		}
+
+		return updatedSession
 	}
 
 	/**

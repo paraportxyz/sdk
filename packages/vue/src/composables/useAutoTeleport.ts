@@ -91,12 +91,10 @@ export default () => {
 
   watch(params, async (params) => {
     if (session.value) {
-      const sessionId = session.value.id
-
       // Wait for Vue to flush its updates and render
       await nextTick()
 
-      await sdk.value.updateSessionParams(sessionId, params)
+      await sdk.value.updateSessionParams(session.value.id, params)
     }
   })
 

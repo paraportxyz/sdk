@@ -46,7 +46,7 @@
 		"@polkadot/util-crypto": "13.5.7",
 		"@vitest/coverage-v8": "3.1.2",
 		"jsdom": "^26.1.0",
-		"polkadot-api": "1.20.x",
+		"polkadot-api": "1.22.x",
 		"process": "^0.11.10",
 		"typescript": "^5.7.3",
 		"vite": "^6.0.7",
@@ -54,7 +54,7 @@
 		"vitest": "^3.1.2"
 	},
 	"peerDependencies": {
-		"polkadot-api": "1.20.x"
+		"polkadot-api": "1.22.x"
 	},
 	"dependencies": {
 		"@paraport/static": "workspace:*",

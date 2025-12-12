@@ -5,15 +5,19 @@
   "description": "Vue components for ParaPort SDK",
   "author": "Paraport",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paraportxyz/sdk"
+  },
   "keywords": [
     "paraport",
     "polkadot",
     "sdk",
     "vue"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

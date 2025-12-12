@@ -1,5 +1,11 @@
 # @paraport/core
 
+## 0.2.1
+
+### Patch Changes
+
+- 3040e7e: sync with paraspell polkadot-api version requirment
+
 ## 0.2.0
 
 ### Minor Changes

@@ -11,7 +11,7 @@
     "@paraport/sdk": "workspace:*",
     "@paraport/vue": "workspace:*",
     "@vitejs/plugin-vue": "^5.2.1",
-    "polkadot-api": "1.20.0",
+    "polkadot-api": "1.22.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "vue": "^3.5.13"

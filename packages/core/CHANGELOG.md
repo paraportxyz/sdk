@@ -1,5 +1,11 @@
 # @paraport/core
 
+## 0.2.0
+
+### Minor Changes
+
+- a6749d9: update teleport session params on params props change
+
 ## 0.1.11
 
 ### Patch Changes

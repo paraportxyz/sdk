@@ -1,5 +1,16 @@
 # @paraport/vue
 
+## 0.2.0
+
+### Minor Changes
+
+- a6749d9: update teleport session params on params props change
+
+### Patch Changes
+
+- Updated dependencies [a6749d9]
+  - @paraport/core@0.2.0
+
 ## 0.1.12
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @paraport/sdk
 
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [a6749d9]
+  - @paraport/core@0.2.0
+  - @paraport/vue@0.2.0
+
 ## 0.1.12
 
 ### Patch Changes

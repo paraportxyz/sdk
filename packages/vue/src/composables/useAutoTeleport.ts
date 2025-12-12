@@ -4,7 +4,7 @@ import {
   TeleportEventTypes,
   TeleportSessionStatuses,
 } from '@paraport/core'
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue'
 import { useSdk } from '@/composables/useSdk'
 import eventBus from '@/utils/event-bus'
 
@@ -87,6 +87,15 @@ export default () => {
     session.value = await sdk.value.initSession(params.value)
 
     loading.value = false
+  })
+
+  watch(params, async (params) => {
+    if (session.value) {
+      // Wait for Vue to flush its updates and render
+      await nextTick()
+
+      await sdk.value.updateSessionParams(session.value.id, params)
+    }
   })
 
   return {

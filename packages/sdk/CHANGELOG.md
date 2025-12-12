@@ -1,5 +1,14 @@
 # @paraport/sdk
 
+## 0.1.14
+
+### Patch Changes
+
+- 3040e7e: sync with paraspell polkadot-api version requirment
+- Updated dependencies [3040e7e]
+  - @paraport/core@0.2.1
+  - @paraport/vue@0.2.1
+
 ## 0.1.13
 
 ### Patch Changes

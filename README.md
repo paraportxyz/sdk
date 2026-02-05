@@ -48,6 +48,10 @@ Requirements
 
 See TESTING.md for a consolidated, step-by-step guide covering build order, commands to run unit/integration tests across packages, and the required environment variables for live E2E tests.
 
-## License
+## Funding
 
-MIT
+Project was funded as a common good by
+
+<div align="center">
+  <img width="200" alt="version" src="https://user-images.githubusercontent.com/55763425/211145923-f7ee2a57-3e63-4b7d-9674-2da9db46b2ee.png" />
+</div>

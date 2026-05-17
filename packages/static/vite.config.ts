@@ -19,7 +19,7 @@ export default defineConfig({
 	},
 	plugins: [
 		dts({
-			rollupTypes: true,
+			entryRoot: 'src',
 			compilerOptions: { preserveWatchOutput: true },
 		}),
 	],

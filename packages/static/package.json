@@ -29,11 +29,11 @@
 		"generate": "node scripts/generate-providers.mjs && pnpm exec biome format --write src/providers.ts"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@polkadot/apps-config": "^0.167.1",
-		"@types/node": "^20.0.0",
-		"typescript": "^5.7.3",
-		"vite": "^6.0.7",
-		"vite-plugin-dts": "^4.5.0"
+		"@biomejs/biome": "^2.4.15",
+		"@polkadot/apps-config": "^0.171.1",
+		"@types/node": "^25.8.0",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.13",
+		"vite-plugin-dts": "^5.0.0"
 	}
 }

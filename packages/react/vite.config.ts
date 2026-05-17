@@ -9,7 +9,6 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     dts({
-       rollupTypes: true,
        include: ['src/**/*'],
        // Ensure we're generating declarations for .tsx files
        entryRoot: 'src',

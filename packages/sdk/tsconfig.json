@@ -2,10 +2,11 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"strict": true,
 		"declaration": true,
 		"outDir": "dist",
+		"ignoreDeprecations": "6.0",
 		"baseUrl": ".",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,

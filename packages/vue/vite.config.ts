@@ -6,7 +6,15 @@ import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig(({ mode }) => ({
-  plugins: [vue(), dts({ rollupTypes: true })],
+  plugins: [
+    vue(),
+    dts({
+      entryRoot: 'src',
+      copyDtsFiles: true,
+      include: ['src/**/*'],
+      exclude: ['src/__tests__/**', '**/*.test.*'],
+    }),
+  ],
   css: {
     postcss: {
       plugins: [tailwind(), autoprefixer()],

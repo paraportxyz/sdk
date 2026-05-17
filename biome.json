@@ -1,31 +1,38 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-	"organizeImports": {
-		"enabled": true
+	"$schema": "https://biomejs.dev/schemas/2.4.5/schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
 	},
 	"files": {
-    "ignore": [
-      "node_modules",
-      "dist",
-      ".git",
-      "coverage",
-      "**/__tests__/**",
-      "**/__snapshots__/**",
-      "**/e2e/**",
-      "**/src/descriptors/**",
-      "**/.papi/**",
-      "**/vitest.config.*.ts",
-      "**/vitest.config.ts",
-      "**/vite.config.ts",
-      "**/*.test.ts",
-      "**/*.test.tsx",
-      "**/*.spec.ts",
-      "**/*.spec.tsx"
-    ]
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/.git",
+			"!**/coverage",
+			"!**/__tests__",
+			"!**/__snapshots__",
+			"!**/e2e",
+			"!**/src/descriptors",
+			"!**/.papi",
+			"!**/vitest.config.*.ts",
+			"!**/vitest.config.ts",
+			"!**/vite.config.ts",
+			"!**/*.test.ts",
+			"!**/*.test.tsx",
+			"!**/*.spec.ts",
+			"!**/*.spec.tsx"
+		]
 	},
 	"overrides": [
 		{
-			"include": ["*.vue"],
+			"includes": [
+				"**/*.vue"
+			],
 			"linter": {
 				"rules": {
 					"style": {

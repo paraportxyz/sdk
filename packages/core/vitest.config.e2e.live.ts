@@ -16,8 +16,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      // Use Node WS provider in live Node tests (no browser WebSocket)
-      'polkadot-api/ws-provider/web': 'polkadot-api/ws-provider/node',
     },
   },
 })

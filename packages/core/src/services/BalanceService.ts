@@ -1,16 +1,22 @@
+import type { Asset, Chain } from '@paraport/static'
+import { getAssetId, transform } from '@paraspell/sdk'
+import pRetry from 'p-retry'
 import type { Logger } from '@/services/LoggerService'
 import type PolkadotApi from '@/services/PolkadotApi'
 import type { ApiMap } from '@/services/PolkadotApi'
 import { formatAddress, transferableBalanceOf } from '@/utils'
 import { getAssetInfoOrThrow } from '@/utils/assets'
-import type { Asset, Chain } from '@paraport/static'
-import {
-	type TForeignAssetInfo,
-	type TNativeAssetInfo,
-	getAssetId,
-	transform,
-} from '@paraspell/sdk'
-import pRetry from 'p-retry'
+
+type ParaspellAssetInfo = {
+	symbol: string
+	isNative?: boolean
+	assetId?: string
+	location?: unknown
+	balance?: bigint | string | number
+	existentialDeposit?: string
+	isFeeAsset?: boolean
+	alias?: string
+}
 
 /**
  * Balance information for an account/asset on a chain.
@@ -72,14 +78,15 @@ export default class BalanceService {
 
 		let amount = BigInt(0)
 
-		if ((assetInfo as TNativeAssetInfo)?.isNative) {
+		if ((assetInfo as ParaspellAssetInfo).isNative) {
 			const { data } = await api.query.System.Account.getValue(formattedAddress)
 			amount = data.free
 		}
 		// Foreign Assets
 		else {
-			const assetId = Number((assetInfo as TForeignAssetInfo)?.assetId)
-			const location = (assetInfo as TForeignAssetInfo).location
+			const foreignAsset = assetInfo as ParaspellAssetInfo
+			const assetId = Number(foreignAsset.assetId)
+			const location = foreignAsset.location
 
 			if (chain === 'Hydration' || chain === 'HydrationPaseo') {
 				amount = await (
@@ -194,7 +201,7 @@ export default class BalanceService {
 			// Non-Hydration chains
 			// Decide source: native System.Account vs pallet assets (Assets/ForeignAssets).
 			try {
-				if ((assetInfo as TNativeAssetInfo)?.isNative) {
+				if ((assetInfo as ParaspellAssetInfo).isNative) {
 					// Native: subscribe to System.Account
 					let {
 						data: { free: previousFree },
@@ -202,7 +209,7 @@ export default class BalanceService {
 
 					return api.query.System.Account.watchValue(
 						formattedAddress,
-					).subscribe(({ data }) => {
+					).subscribe(({ value: { data } }) => {
 						const { free } = data
 						if (free > previousFree) {
 							callback()
@@ -212,7 +219,7 @@ export default class BalanceService {
 				}
 
 				// Foreign assets (by location or assetId) — prefer pallet subscriptions when available.
-				const foreignAsset = assetInfo as TForeignAssetInfo
+				const foreignAsset = assetInfo as ParaspellAssetInfo
 				if (
 					chain === 'AssetHubPolkadot' ||
 					chain === 'AssetHubKusama' ||
@@ -232,7 +239,7 @@ export default class BalanceService {
 						return typedApi.query.ForeignAssets.Account.watchValue(
 							transform(foreignAsset.location),
 							formattedAddress,
-						).subscribe((data) => {
+						).subscribe(({ value: data }) => {
 							const free = BigInt(data?.balance || 0)
 							if (free > previousFree) {
 								callback()
@@ -252,7 +259,7 @@ export default class BalanceService {
 						return typedApi.query.Assets.Account.watchValue(
 							id,
 							formattedAddress,
-						).subscribe((data) => {
+						).subscribe(({ value: data }) => {
 							const free = BigInt(data?.balance || 0)
 							if (free > previousFree) {
 								callback()
@@ -274,7 +281,7 @@ export default class BalanceService {
 			} = await api.query.System.Account.getValue(formattedAddress)
 
 			return api.query.System.Account.watchValue(formattedAddress).subscribe(
-				({ data }) => {
+				({ value: { data } }) => {
 					const { free } = data
 					if (free > previousFree) {
 						callback()

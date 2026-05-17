@@ -38,8 +38,8 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     dts({
+      entryRoot: 'src',
       compilerOptions: { preserveWatchOutput: true },
-      rollupTypes: true,
       tsconfigPath: resolve(__dirname, './tsconfig.build.json'),
       exclude: [
         '**/__tests__/**',

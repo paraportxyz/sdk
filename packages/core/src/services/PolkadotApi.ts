@@ -1,11 +1,10 @@
-import { ahk, ahp, ahpas, copas, dot, hyd, hydpas, ksm } from '@/descriptors'
-import type { SDKConfig } from '@/types/common'
 import type { Chain } from '@paraport/static'
 import { Chains, PROVIDERS } from '@paraport/static'
 import type { PolkadotClient, TypedApi } from 'polkadot-api'
 import { createClient } from 'polkadot-api'
-import { withPolkadotSdkCompat } from 'polkadot-api/polkadot-sdk-compat'
-import { getWsProvider } from 'polkadot-api/ws-provider/web'
+import { getWsProvider } from 'polkadot-api/ws'
+import { ahk, ahp, ahpas, copas, dot, hyd, hydpas, ksm } from '@/descriptors'
+import type { SDKConfig } from '@/types/common'
 
 const config = {
 	[Chains.AssetHubPolkadot]: {
@@ -69,9 +68,7 @@ export default class PolkadotApi {
 
 			const endpoints = configEndpoints || [...config[chain].providers]
 
-			const client = createClient(
-				withPolkadotSdkCompat(getWsProvider({ endpoints })),
-			)
+			const client = createClient(getWsProvider(endpoints))
 
 			this.clients.set(chain, client)
 		}

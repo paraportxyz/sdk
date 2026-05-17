@@ -5,7 +5,6 @@ import type { SDKConfig } from '@/types/common'
 
 const createClientMock = vi.fn()
 const getWsProviderMock = vi.fn()
-const withCompatMock = vi.fn()
 
 vi.mock('polkadot-api', async (importOriginal) => {
   const actual = await importOriginal<any>()
@@ -15,12 +14,8 @@ vi.mock('polkadot-api', async (importOriginal) => {
   }
 })
 
-vi.mock('polkadot-api/ws-provider/web', () => ({
+vi.mock('polkadot-api/ws', () => ({
   getWsProvider: (...args: unknown[]) => getWsProviderMock(...args),
-}))
-
-vi.mock('polkadot-api/polkadot-sdk-compat', () => ({
-  withPolkadotSdkCompat: (...args: unknown[]) => withCompatMock(...args),
 }))
 
 // Avoid loading heavy real descriptors and their deep dependencies
@@ -41,8 +36,7 @@ describe('PolkadotApi', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    getWsProviderMock.mockImplementation(({ endpoints }: any) => ({ endpoints }))
-    withCompatMock.mockImplementation((provider: any) => provider)
+    getWsProviderMock.mockImplementation((endpoints: string[]) => ({ endpoints }))
 
     client = {
       getTypedApi: vi.fn().mockReturnValue({ TypedApi: true }),
@@ -76,12 +70,12 @@ describe('PolkadotApi', () => {
     api.getInstance(Chains.Kusama)
 
     // getWsProvider receives the override
-    expect(getWsProviderMock).toHaveBeenCalledWith({ endpoints: customEndpoints })
+    expect(getWsProviderMock).toHaveBeenCalledWith(customEndpoints)
 
     // Non-overridden chain falls back to PROVIDERS from static
     api.getInstance(Chains.Polkadot)
     const calledWith = getWsProviderMock.mock.calls.find(
-      ([arg]: any[]) => Array.isArray(arg?.endpoints) && arg.endpoints[0] === PROVIDERS.Polkadot[0],
+      ([arg]: any[]) => Array.isArray(arg) && arg[0] === PROVIDERS.Polkadot[0],
     )
     expect(calledWith).toBeTruthy()
   })

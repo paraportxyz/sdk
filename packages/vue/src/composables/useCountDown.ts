@@ -52,7 +52,7 @@ export function useCountDown({
   const endTime = ref(0)
 
   const countdown = () => {
-    const now = new Date().getTime()
+    const now = Date.now()
     distance.value = endTime.value - now
     hours.value = Math.floor(distance.value / (1000 * 60 * 60))
     minutes.value = Math.floor(
@@ -63,7 +63,7 @@ export function useCountDown({
 
   const startCountDown = () => {
     isRunning.value = true
-    endTime.value = new Date().getTime() + durationMs.value
+    endTime.value = Date.now() + durationMs.value
     countdown()
     timer.value = setInterval(countdown, 1000)
   }

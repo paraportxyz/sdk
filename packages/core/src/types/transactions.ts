@@ -1,6 +1,6 @@
+import type { Chain } from '@paraport/static'
 import type { BaseDetails, BaseDetailsEvent } from '@/base/BaseManager'
 import type { BridgeTransferParams } from '@/types/bridges'
-import type { Chain } from '@paraport/static'
 import type { ObjectValues } from './utils'
 
 /** Transaction event channels. */

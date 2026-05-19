@@ -1,6 +1,6 @@
-import { ss58Of } from '@/utils/chains'
 import type { Chain } from '@paraport/static'
 import { decodeAddress, encodeAddress } from 'dedot/utils'
+import { ss58Of } from '@/utils/chains'
 
 /**
  * Re-encodes an address to the target chain's ss58 format.
@@ -20,7 +20,7 @@ export const isValidAddress = (address: string) => {
 	try {
 		encodeAddress(decodeAddress(address))
 		return true
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

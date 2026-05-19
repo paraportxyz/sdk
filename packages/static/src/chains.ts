@@ -1,5 +1,10 @@
-import { type Asset, Assets, type ChainProperties, type Config } from './types'
-import { Chains } from './types'
+import {
+	type Asset,
+	Assets,
+	type ChainProperties,
+	Chains,
+	type Config,
+} from './types'
 
 export const toChainProperty = (
 	ss58Format: number,

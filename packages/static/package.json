@@ -2,7 +2,12 @@
 	"name": "@paraport/static",
 	"version": "0.0.6",
 	"description": "Static configuration and constants for ParaPort SDK",
-	"keywords": ["paraport", "polkadot", "sdk", "blockchain"],
+	"keywords": [
+		"paraport",
+		"polkadot",
+		"sdk",
+		"blockchain"
+	],
 	"author": "Paraport",
 	"license": "MIT",
 	"publishConfig": {
@@ -19,7 +24,11 @@
 			"require": "./dist/index.cjs"
 		}
 	},
-	"files": ["dist", "README.md", "LICENSE"],
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"prebuild": "pnpm run generate",
 		"build": "vite build",

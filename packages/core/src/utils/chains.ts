@@ -1,7 +1,7 @@
 import {
 	type Asset,
-	CHAINS,
 	CHAIN_NAMES,
+	CHAINS,
 	type Chain,
 	type ChainProperties,
 	Chains,

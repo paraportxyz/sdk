@@ -2,11 +2,18 @@
 	"name": "@paraport/sdk",
 	"version": "0.1.14",
 	"description": "ParaPort Embedded UI",
-	"keywords": ["paraport", "polkadot", "sdk"],
+	"keywords": [
+		"paraport",
+		"polkadot",
+		"sdk"
+	],
 	"author": "Paraport",
 	"license": "MIT",
 	"type": "module",
-	"files": ["dist", "README.md"],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"publishConfig": {
 		"access": "public"
 	},

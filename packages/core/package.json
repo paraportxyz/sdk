@@ -2,7 +2,12 @@
 	"name": "@paraport/core",
 	"version": "0.2.1",
 	"description": "Core functionality for ParaPort SDK",
-	"keywords": ["paraport", "polkadot", "sdk", "blockchain"],
+	"keywords": [
+		"paraport",
+		"polkadot",
+		"sdk",
+		"blockchain"
+	],
 	"license": "MIT",
 	"author": "Paraport",
 	"publishConfig": {
@@ -22,7 +27,11 @@
 			"import": "./dist/index.js"
 		}
 	},
-	"files": ["dist", "README.md", "LICENSE"],
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"papi:generate": "papi",
 		"papi:update": "papi update",

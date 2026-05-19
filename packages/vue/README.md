@@ -155,7 +155,7 @@ createApp({
 | onReady | Function | Callback when UI is ready for interaction, receives session object |
 | onAddFunds | Function | Callback when user clicks to add funds |
 | appearance | Record<string,string> | Optional per‑instance CSS variables (e.g., `{ '--radius': '12px' }`) |
-| themeMode | 'light' \\| 'dark' \\| 'auto' | Optional theme mode; defaults to 'auto' (system) |
+| themeMode | `'light' \| 'dark' \| 'auto'` | Optional theme mode; defaults to 'auto' (system) |
 
 ## License
 

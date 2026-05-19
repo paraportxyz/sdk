@@ -20,8 +20,8 @@ describe.sequential(
 				from: vi.fn().mockReturnThis(),
 				to: vi.fn().mockReturnThis(),
 				currency: vi.fn().mockReturnThis(),
-				address: vi.fn().mockReturnThis(),
-				senderAddress: vi.fn().mockReturnThis(),
+				recipient: vi.fn().mockReturnThis(),
+				sender: vi.fn().mockReturnThis(),
 				feeAsset: vi.fn().mockReturnThis(),
 				dryRun: vi.fn().mockResolvedValue({}),
 				getXcmFee: vi.fn().mockResolvedValue({
@@ -43,10 +43,10 @@ describe.sequential(
 			return {
 				Builder: vi.fn().mockReturnValue(builderChain),
 				// Minimal assets catalog for utils/assets
-				getAssetsObject: vi.fn((_chain: string) => ({
-					nativeAssets: [{ symbol: 'KSM' }, { symbol: 'DOT' }],
-					otherAssets: [],
-				})),
+				getAssets: vi.fn((_chain: string) => [
+					{ symbol: 'KSM' },
+					{ symbol: 'DOT' },
+				]),
 			}
 		})
 

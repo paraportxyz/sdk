@@ -75,12 +75,12 @@ describe('BalanceService', () => {
     const unsub = await svc.subscribeBalances({ address: SUBSTRATE_ADDRESS, asset: Assets.KSM, chains: [Chains.Kusama, Chains.AssetHubKusama] }, cb)
 
     // No change
-    callbacks[Chains.Kusama]!({ data: { free: 100n } })
-    callbacks[Chains.AssetHubKusama]!({ data: { free: 100n } })
+    callbacks[Chains.Kusama]!({ value: { data: { free: 100n } } })
+    callbacks[Chains.AssetHubKusama]!({ value: { data: { free: 100n } } })
     // Increase on Kusama
-    callbacks[Chains.Kusama]!({ data: { free: 150n } })
+    callbacks[Chains.Kusama]!({ value: { data: { free: 150n } } })
     // Decrease on AHK does not trigger
-    callbacks[Chains.AssetHubKusama]!({ data: { free: 90n } })
+    callbacks[Chains.AssetHubKusama]!({ value: { data: { free: 90n } } })
 
     expect(cb).toHaveBeenCalledTimes(1)
 

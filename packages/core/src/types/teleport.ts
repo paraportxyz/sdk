@@ -1,7 +1,7 @@
+import type { Asset, Chain } from '@paraport/static'
 import type { BaseDetails, BaseDetailsEvent } from '@/base/BaseManager'
 import type { Route } from '@/types/common'
 import type { TransactionDetails } from '@/types/transactions'
-import type { Asset, Chain } from '@paraport/static'
 import type { ObjectValues } from './utils'
 
 export type TeleportEvent = BaseDetailsEvent

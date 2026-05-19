@@ -1,7 +1,7 @@
+import { Chains } from '@paraport/static'
 import ConfigValidationError from '@/errors/ConfigError'
 import type { SDKConfig } from '@/types/common'
 import { LogLevels } from '@/types/sdk'
-import { Chains } from '@paraport/static'
 
 /** Utilities for validating and enriching SDK configuration. */
 export class SDKConfigManager {

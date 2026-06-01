@@ -1,5 +1,18 @@
 # @paraport/core
 
+## 0.3.0
+
+### Minor Changes
+
+- d4c33b3: Update the SDK stack to polkadot-api 2.1.x and refreshed build/tooling dependencies.
+
+  Also fixes the SDK UMD build by declaring globals for external polkadot-api modules.
+
+### Patch Changes
+
+- Updated dependencies [d4c33b3]
+  - @paraport/static@0.0.7
+
 ## 0.2.1
 
 ### Patch Changes

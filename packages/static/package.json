@@ -1,6 +1,6 @@
 {
 	"name": "@paraport/static",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "Static configuration and constants for ParaPort SDK",
 	"keywords": [
 		"paraport",

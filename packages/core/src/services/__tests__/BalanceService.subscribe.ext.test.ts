@@ -122,10 +122,10 @@ describe('BalanceService.subscribeBalances extended paths', () => {
     )
 
     // Simulate no change then increase on whichever pallet was used
-    faCb?.({ balance: 100n })
-    assetsCb?.({ balance: 100n })
-    faCb?.({ balance: 120n })
-    assetsCb?.({ balance: 120n })
+    faCb?.({ value: { balance: 100n } })
+    assetsCb?.({ value: { balance: 100n } })
+    faCb?.({ value: { balance: 120n } })
+    assetsCb?.({ value: { balance: 120n } })
 
     expect(cb).toHaveBeenCalledTimes(1)
     stop()
@@ -168,8 +168,8 @@ describe('BalanceService.subscribeBalances extended paths', () => {
       cb,
     )
 
-    sysCb && sysCb({ data: { free: 100n } })
-    sysCb && sysCb({ data: { free: 150n } })
+    sysCb && sysCb({ value: { data: { free: 100n } } })
+    sysCb && sysCb({ value: { data: { free: 150n } } })
     expect(cb).toHaveBeenCalledTimes(1)
     stop()
     expect(sysUnsub).toHaveBeenCalledTimes(1)

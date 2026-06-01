@@ -1,3 +1,5 @@
+import type { Asset, Chain } from '@paraport/static'
+import { Builder } from '@paraspell/sdk'
 import { Initializable } from '@/base/Initializable'
 import type BalanceService from '@/services/BalanceService'
 import type { Balance } from '@/services/BalanceService'
@@ -20,8 +22,6 @@ import {
 	isFeeAssetSupportedForRoute,
 } from '@/utils/assets'
 import { signAndSend } from '@/utils/tx'
-import type { Asset, Chain } from '@paraport/static'
-import { Builder } from '@paraspell/sdk'
 
 type XCMTransferParams = {
 	amount: bigint
@@ -70,8 +70,8 @@ export default class XCMBridge extends Initializable implements BridgeAdapter {
 			.from(originChain)
 			.to(destinationChain)
 			.currency({ ...currencyInput, amount })
-			.address(formatAddress(address, destinationChain))
-			.senderAddress(formatAddress(address, originChain))
+			.recipient(formatAddress(address, destinationChain))
+			.sender(formatAddress(address, originChain))
 
 		if (
 			isFeeAssetSupportedForRoute({
@@ -288,7 +288,7 @@ export default class XCMBridge extends Initializable implements BridgeAdapter {
 		if (
 			transferAmount <= 0n || // valid transfer amount
 			receivingAmount <= 0n || // ensures positive receive
-			Boolean(dryRun.failureReason) || // fails to execute
+			dryRun.failureReason || // fails to execute
 			highestBalanceChain.transferable < transferAmount || // can transfer
 			(teleportMode === TeleportModes.Expected &&
 				currentChainBalance.transferable + receivingAmount < amount) // ends up with desired amount

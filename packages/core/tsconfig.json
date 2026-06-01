@@ -6,9 +6,9 @@
 		"strict": true,
 		"declaration": true,
 		"outDir": "dist",
-		"baseUrl": ".",
+		"ignoreDeprecations": "6.0",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"include": ["src", "e2e", "vitest.config.ts", "vitest.config.e2e.ts"],

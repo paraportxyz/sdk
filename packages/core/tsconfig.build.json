@@ -10,5 +10,8 @@
 		"e2e",
 		"node_modules",
 		"dist"
-	]
+	],
+	"compilerOptions": {
+		"rootDir": "./src"
+	}
 }

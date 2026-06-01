@@ -22,10 +22,7 @@ vi.mock('@paraspell/sdk', async (importOriginal) => {
     ...actual,
     ...builder,
     // Minimal assets catalog for assets.ts utilities
-    getAssetsObject: vi.fn((_chain: string) => ({
-      nativeAssets: [{ symbol: 'KSM' }, { symbol: 'DOT' }],
-      otherAssets: [],
-    })),
+    getAssets: vi.fn((_chain: string) => [{ symbol: 'KSM' }, { symbol: 'DOT' }]),
   }
 })
 

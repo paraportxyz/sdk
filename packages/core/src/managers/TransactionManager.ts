@@ -1,3 +1,4 @@
+import type { Chain } from '@paraport/static'
 import { type BaseDetailsEvent, BaseManager } from '@/base/BaseManager'
 import type { GenericEmitter } from '@/base/GenericEmitter'
 import type { BridgeTransferParams } from '@/types/bridges'
@@ -9,7 +10,6 @@ import {
 	TransactionStatuses,
 	type TransactionType,
 } from '@/types/transactions'
-import type { Chain } from '@paraport/static'
 
 /**
  * Manages bridge-related transactions for a single teleport.

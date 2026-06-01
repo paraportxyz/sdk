@@ -19,7 +19,11 @@ export default defineConfig({
       ].includes(id) || id.startsWith('polkadot-api/'),
       output: {
         globals: {
-          vue: 'Vue'
+          vue: 'Vue',
+          'polkadot-api': 'polkadotApi',
+          'polkadot-api/signer': 'polkadotApiSigner',
+          'polkadot-api/utils': 'polkadotApiUtils',
+          'polkadot-api/ws': 'polkadotApiWs'
         },
         assetFileNames: (assetInfo) => {
           if (assetInfo.name === 'style.css') return 'index.css'
@@ -46,6 +50,6 @@ export default defineConfig({
     }
   },
   plugins: [
-    dts({ rollupTypes: true })
+    dts({ entryRoot: 'src' })
   ]
 })

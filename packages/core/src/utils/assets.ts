@@ -9,11 +9,26 @@
 import type { Asset, Chain } from '@paraport/static'
 import {
 	ForeignAbstract,
-	type TCurrencyInput,
-	type TForeignAssetInfo,
-	getAssetsObject,
+	getAssets,
 	getSupportedAssets,
+	type TCurrencyInput,
 } from '@paraspell/sdk'
+
+type ParaspellLocationInput = Extract<
+	TCurrencyInput,
+	{ location: unknown }
+>['location']
+
+type ParaspellAssetInfo = {
+	decimals?: number
+	symbol: string
+	isNative?: boolean
+	assetId?: string
+	location?: ParaspellLocationInput
+	existentialDeposit?: string
+	isFeeAsset?: boolean
+	alias?: string
+}
 
 /**
  * Chain→asset→alias overrides used to disambiguate assets with multiple
@@ -63,10 +78,10 @@ export const getAssetInfo = (
 	symbol: Asset,
 	{ autoalias = true } = {},
 ) => {
-	const { nativeAssets, otherAssets } = getAssetsObject(chain)
+	const assets = getAssets(chain) as ParaspellAssetInfo[]
 	const alias = aliasMap[chain]?.[symbol]
 
-	return [...nativeAssets, ...otherAssets].find((asset) =>
+	return assets.find((asset) =>
 		autoalias
 			? asset.symbol === symbol && asset.alias === alias
 			: asset.symbol === symbol,
@@ -124,7 +139,7 @@ export const getParaspellCurrencyInput = (
 		return { symbol: ForeignAbstract(assetInfo.alias) }
 	}
 
-	const assetId = (assetInfo as TForeignAssetInfo).assetId
+	const assetId = assetInfo.assetId
 
 	if (assetId) {
 		return { id: assetId }
@@ -218,7 +233,11 @@ export const isFeeAssetSupportedForRoute = ({
 	origin,
 	destination,
 	symbol,
-}: { origin: Chain; destination: Chain; symbol: Asset }): boolean => {
+}: {
+	origin: Chain
+	destination: Chain
+	symbol: Asset
+}): boolean => {
 	const asset = getAssetInfo(origin, symbol)
 
 	return (

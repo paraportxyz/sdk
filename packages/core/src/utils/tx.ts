@@ -1,11 +1,11 @@
+import type { TPapiTransaction } from '@paraspell/sdk'
+import type { PolkadotSigner, TxEvent } from 'polkadot-api'
 import {
 	type TransactionCallback,
 	type TransactionStatus,
 	TransactionStatuses,
 	type TransactionUnsubscribe,
 } from '@/types/transactions'
-import type { TPapiTransaction } from '@paraspell/sdk'
-import type { PolkadotSigner, TxEvent } from 'polkadot-api'
 
 /**
  * Maps low-level TxEvent to a TransactionStatus used by the SDK.

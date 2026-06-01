@@ -2,11 +2,18 @@
 	"name": "@paraport/sdk",
 	"version": "0.1.14",
 	"description": "ParaPort Embedded UI",
-	"keywords": ["paraport", "polkadot", "sdk"],
+	"keywords": [
+		"paraport",
+		"polkadot",
+		"sdk"
+	],
 	"author": "Paraport",
 	"license": "MIT",
 	"type": "module",
-	"files": ["dist", "README.md"],
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"publishConfig": {
 		"access": "public"
 	},
@@ -33,21 +40,21 @@
 		"test": "vitest run"
 	},
 	"peerDependencies": {
-		"polkadot-api": "1.22.x"
+		"polkadot-api": "2.1.x"
 	},
 	"dependencies": {
 		"@paraport/vue": "workspace:*",
 		"@paraport/core": "workspace:*",
-		"vue": "^3.5.13"
+		"vue": "^3.5.34"
 	},
 	"devDependencies": {
-		"polkadot-api": "1.22.x",
-		"@biomejs/biome": "^1.9.4",
-		"@vitest/coverage-v8": "^3.1.2",
-		"jsdom": "^26.1.0",
-		"typescript": "^5.7.3",
-		"vite": "^6.0.7",
-		"vite-plugin-dts": "^4.5.0",
-		"vitest": "^3.1.2"
+		"polkadot-api": "2.1.x",
+		"@biomejs/biome": "^2.4.15",
+		"@vitest/coverage-v8": "^4.1.6",
+		"jsdom": "^29.1.1",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.13",
+		"vite-plugin-dts": "^5.0.0",
+		"vitest": "^4.1.6"
 	}
 }

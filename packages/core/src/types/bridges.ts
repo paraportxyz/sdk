@@ -1,3 +1,4 @@
+import type { Asset, Chain } from '@paraport/static'
 import type { IInitializable } from '@/base/Initializable'
 import type { Quote } from '@/types/common'
 import type { TeleportParams } from '@/types/teleport'
@@ -5,7 +6,6 @@ import type {
 	TransactionCallback,
 	TransactionUnsubscribe,
 } from '@/types/transactions'
-import type { Asset, Chain } from '@paraport/static'
 
 /** Bridge protocol identifiers supported by the SDK. */
 export type BridgeProtocol = 'XCM'

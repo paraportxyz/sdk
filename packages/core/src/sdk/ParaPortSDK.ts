@@ -1,3 +1,4 @@
+import { Assets, Chains } from '@paraport/static'
 import { GenericEmitter } from '@/base/GenericEmitter'
 import { Initializable } from '@/base/Initializable'
 import BridgeRegistry from '@/bridges/BridgeRegistry'
@@ -29,7 +30,6 @@ import {
 } from '@/types/teleport'
 import { getRouteChains, isValidAddress } from '@/utils'
 import { convertToBigInt } from '@/utils/number'
-import { Assets, Chains } from '@paraport/static'
 
 /**
  * Main entrypoint for interacting with ParaPort SDK.
@@ -297,24 +297,23 @@ export default class ParaPortSDK extends Initializable {
 
 		this.logger.debug('Starting to calculate teleport with params', params)
 
-		// biome-ignore lint/style/useConst: sessionId is assigned after the getter closure is created
-		let sessionId: string
+		const sessionRef = { id: '' }
 
 		const { quotes, funds, unsubscribe } = await this.calculateAndSubscribe(
 			params,
-			() => sessionId,
+			() => sessionRef.id,
 		)
 
 		this.logger.debug('Calculated teleport', { quotes, funds })
 
-		sessionId = this.sessionManager.createSession(params, {
+		sessionRef.id = this.sessionManager.createSession(params, {
 			status: TeleportSessionStatuses.Ready,
 			quotes,
 			funds,
 			unsubscribe,
 		})
 
-		const session = this.sessionManager.getItem(sessionId)
+		const session = this.sessionManager.getItem(sessionRef.id)
 
 		if (!session) {
 			throw new Error('Session not found')
